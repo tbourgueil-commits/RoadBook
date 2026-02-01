@@ -620,49 +620,123 @@
             background: #f0f0f0;
             color: #333;
         }
+
+        .trip-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+            background: #fff;
+        }
+        .trip-card button {
+            width: 100%;
+            border: none;
+            text-align: left;
+            padding: 18px;
+            cursor: pointer;
+            background: transparent;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+            min-height: 110px;
+        }
+        .trip-card .bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: saturate(1.05);
+        }
+        .trip-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.35), rgba(0,0,0,0.10));
+            z-index: 1;
+        }
+        .trip-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        }
+        .trip-meta {
+            font-size: 14px;
+            opacity: 0.95;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        }
+        .trip-comment {
+            font-size: 13px;
+            opacity: 0.9;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        }
+
     </style>
 </head>
 <body>
 <div class="container">
 <div class="setup-screen" id="setupScreen">
-<h1>🏜️ Bienvenue !</h1>
-<p>Configurez votre carnet de voyage</p>
-<div class="form-field">
-<label>Votre nom</label>
-<input id="setupName" placeholder="Ex: Thomas" type="text"/>
-</div>
-<div class="form-field">
-<label>Votre email</label>
-<input id="setupEmail" placeholder="Ex: thomas@example.com" type="email"/>
-</div>
-<div class="form-field">
-<label>Nom du voyage</label>
-<input id="setupTripName" placeholder="Ex: Road Trip Maroc 2026" type="text"/>
-</div>
-<div class="form-field">
-<label>Commentaire / Description (optionnel)</label>
-<textarea id="setupComment" placeholder="Ex: Voyage en famille à travers le Maroc, montagnes et désert..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
-</div>
-<button class="btn-primary" id="startTripBtn" onclick="saveUserConfig()">Commencer mon voyage</button>
+  <h1>🏜️ RoadBook</h1>
+  <p>Connectez-vous puis créez vos road trips</p>
+
+  <div class="form-field">
+    <label>Votre prénom</label>
+    <input id="setupName" placeholder="Ex: Thomas" type="text"/>
+  </div>
+
+  <div class="form-field">
+    <label>Votre email</label>
+    <input id="setupEmail" placeholder="Ex: thomas@example.com" type="email"/>
+  </div>
+
+  <button class="btn-primary" id="loginBtn" onclick="saveUserConfig()">Continuer</button>
+
+  <div style="margin-top:14px;">
+    <button class="btn-primary" style="background:#4CAF50;" onclick="openCreateTripModalFromLogin()">➕ Créer un road trip</button>
+  </div>
+
+  <div style="margin-top:14px; font-size: 13px; color:#666; text-align:center;">
+    Astuce : ajoutez l'app à l'écran d'accueil sur iPhone pour un mode avion plus fiable.
+  </div>
 </div>
 <div class="hidden" id="mainApp">
 <div class="header">
-<h1 id="headerTripName">Road Trip</h1>
-<div class="trip-name" id="headerSubtitle"></div>
-<div class="user-info">
-<span id="headerUserInfo"></span>
-<button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
+  <h1>🏕️ Mes road trips</h1>
+  <div class="trip-name" id="homeSubtitle">Choisissez un road trip ou créez-en un nouveau</div>
+  <div class="user-info">
+    <span id="headerUserInfo"></span>
+    <button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
+  </div>
 </div>
+
+<div id="homeScreen">
+  <button class="add-step-btn" style="margin-top:0;" onclick="openCreateTripModal()">+ Nouveau road trip</button>
+  <div id="tripsContainer"></div>
 </div>
-<div class="day-selector">
-<div class="day-buttons" id="dayButtons"></div>
-<div class="export-buttons-row">
-<button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
-<button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
+
+<div class="hidden" id="tripScreen">
+  <div class="header">
+    <h1 id="headerTripName">Road Trip</h1>
+    <div class="trip-name" id="headerSubtitle"></div>
+    <div class="user-info">
+      <span id="tripDates"></span>
+      <button class="btn-change-user" onclick="backToHome()">⬅️ Accueil</button>
+    </div>
+  </div>
+
+  <div class="day-selector">
+    <div class="day-buttons" id="dayButtons"></div>
+    <div class="export-buttons-row">
+      <button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
+      <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
+    </div>
+  </div>
+
+  <button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
+  <div id="stepsContainer"></div>
 </div>
-</div>
-<button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
-<div id="stepsContainer"></div>
 </div>
 </div>
 <!-- Modal pour ajouter un jour -->
@@ -727,19 +801,50 @@
 <label>Votre email</label>
 <input id="editProfileEmail" placeholder="Ex: thomas@example.com" type="email"/>
 </div>
-<div class="form-field">
-<label>Nom du voyage</label>
-<input id="editProfileTripName" placeholder="Ex: Road Trip Maroc 2026" type="text"/>
-</div>
-<div class="form-field">
-<label>Commentaire / Description (optionnel)</label>
-<textarea id="editProfileComment" placeholder="Ex: Voyage en famille à travers le Maroc..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
-</div>
+
 <div class="button-group">
 <button class="btn-cancel" onclick="closeEditProfileModal()">Annuler</button>
 <button class="btn-save" onclick="saveEditProfile()">Sauvegarder</button>
 </div>
 </div>
+</div>
+<!-- Modal pour créer un road trip -->
+<div class="modal" id="createTripModal">
+  <div class="modal-content">
+    <h2>➕ Créer un road trip</h2>
+    <div class="form-field">
+      <label>Nom du road trip</label>
+      <input id="createTripName" placeholder="Ex: Road Trip Maroc 2026" type="text"/>
+    </div>
+
+    <div class="form-group">
+      <label>Date de début</label>
+      <div class="date-selector">
+        <select id="tripStartDay"></select>
+        <select id="tripStartMonth"></select>
+        <select id="tripStartYear"></select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Date de fin</label>
+      <div class="date-selector">
+        <select id="tripEndDay"></select>
+        <select id="tripEndMonth"></select>
+        <select id="tripEndYear"></select>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>Commentaire (optionnel)</label>
+      <textarea id="createTripComment" placeholder="Ex: Voyage en famille..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
+    </div>
+
+    <div class="button-group">
+      <button class="btn-cancel" onclick="closeCreateTripModal()">Annuler</button>
+      <button class="btn-save" onclick="createTrip()">Créer</button>
+    </div>
+  </div>
 </div>
 <!-- Modal pour ajouter une étape -->
 <div class="modal" id="stepModal">
@@ -852,68 +957,298 @@ let recordingInterval = null;
             
             // Remplir les sélecteurs pour éditer un jour
             fillSelectors('editDaySelect', 'editMonthSelect', 'editYearSelect', today);
+
+            // Remplir les sélecteurs pour création de road trip
+            fillSelectors('tripStartDay','tripStartMonth','tripStartYear', today);
+            fillSelectors('tripEndDay','tripEndMonth','tripEndYear', today);
         }
 
-        function loadUserConfig() {
+        function getSelectedISO(dayId, monthId, yearId) {
+            const d = String(document.getElementById(dayId).value).padStart(2,'0');
+            const m = String(document.getElementById(monthId).value).padStart(2,'0');
+            const y = String(document.getElementById(yearId).value);
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatDateFR(iso) {
+            try {
+                const [y,m,d] = iso.split('-');
+                return `${d}/${m}/${y}`;
+            } catch { return iso; }
+        }
+
+        function openCreateTripModal() {
+            // Pré-remplit des valeurs raisonnables
+            document.getElementById('createTripName').value = '';
+            document.getElementById('createTripComment').value = '';
+            document.getElementById('createTripModal').classList.add('active');
+        }
+
+        function closeCreateTripModal() {
+            document.getElementById('createTripModal').classList.remove('active');
+        }
+
+        async function createTrip() {
+            const name = document.getElementById('createTripName').value.trim();
+            const comment = document.getElementById('createTripComment').value.trim();
+            const startISO = getSelectedISO('tripStartDay','tripStartMonth','tripStartYear');
+            const endISO = getSelectedISO('tripEndDay','tripEndMonth','tripEndYear');
+
+            if (!currentUser) {
+                alert("Veuillez d'abord renseigner votre prénom et email.");
+                return;
+            }
+            if (!name) {
+                alert("Veuillez donner un nom au road trip.");
+                return;
+            }
+            if (!datesBetween(startISO, endISO).length) {
+                alert("Dates invalides : la date de fin doit être après la date de début.");
+                return;
+            }
+
+            const tripId = 'trip_' + Date.now();
+            const trip = {
+                tripId,
+                userId: currentUser.id,
+                name,
+                startDate: startISO,
+                endDate: endISO,
+                comment,
+                createdAt: new Date().toISOString()
+            };
+
+            const content = createTripContentFromDates(startISO, endISO);
+            content.tripId = tripId;
+
+            try {
+                await ensureUserExists();
+                await idbPutTrip(trip);
+                await idbSetTripContent(tripId, content);
+
+                closeCreateTripModal();
+
+                // Si on est sur la page login, on considère que c'est une "connexion"
+                try { localStorage.setItem('currentUser', JSON.stringify(currentUser)); } catch {}
+
+                // Aller directement sur le road trip
+                await showHome();
+                await openTrip(tripId);
+            } catch (e) {
+                console.error(e);
+                alert("Impossible de créer le road trip (stockage).");
+            }
+        }
+
+        async function renderTrips() {
+            if (!currentUser) return;
+
+            const container = document.getElementById('tripsContainer');
+            container.innerHTML = '';
+
+            let trips = [];
+            try {
+                trips = await idbGetTrips(currentUser.id);
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color:#333;background:#fff;padding:12px;border-radius:12px;">Impossible de charger vos road trips.</p>';
+                return;
+            }
+
+            // Tri chronologique par date de début
+            trips.sort((a,b) => String(a.startDate).localeCompare(String(b.startDate)));
+
+            if (trips.length === 0) {
+                container.innerHTML = '<div style="background:#fff;padding:14px;border-radius:14px;color:#333;">Aucun road trip. Cliquez sur <b>Nouveau road trip</b>.</div>';
+                return;
+            }
+
+            // Pour faire varier les images "à chaque connexion", on choisit un seed par session
+            const sessionSeed = Date.now();
+
+            for (const trip of trips) {
+                const card = document.createElement('div');
+                card.className = 'trip-card';
+
+                const bg = document.createElement('div');
+                bg.className = 'bg';
+                // fallback gradient
+                bg.style.backgroundImage = 'linear-gradient(135deg, rgba(210,105,30,0.95), rgba(15,23,42,0.85))';
+                card.appendChild(bg);
+
+                const overlay = document.createElement('div');
+                overlay.className = 'overlay';
+                card.appendChild(overlay);
+
+                const btn = document.createElement('button');
+                btn.onclick = () => openTrip(trip.tripId);
+
+                const title = document.createElement('div');
+                title.className = 'trip-title';
+                title.textContent = trip.name;
+
+                const meta = document.createElement('div');
+                meta.className = 'trip-meta';
+                meta.textContent = `${formatDateFR(trip.startDate)} → ${formatDateFR(trip.endDate)} • ${datesBetween(trip.startDate, trip.endDate).length} jours`;
+
+                const comment = document.createElement('div');
+                comment.className = 'trip-comment';
+                comment.textContent = trip.comment ? trip.comment : '';
+
+                btn.appendChild(title);
+                btn.appendChild(meta);
+                if (trip.comment) btn.appendChild(comment);
+
+                card.appendChild(btn);
+                container.appendChild(card);
+
+                // Charger une photo au hasard depuis le contenu du trip (async, n'empêche pas l'affichage)
+                (async () => {
+                    try {
+                        const data = await idbGetTripContent(trip.tripId);
+                        if (!data) return;
+
+                        const photos = [];
+                        for (const day of data.days || []) {
+                            for (const step of day.steps || []) {
+                                if (step.photoBlob) photos.push(step.photoBlob);
+                            }
+                        }
+                        if (photos.length === 0) return;
+
+                        // pseudo-random stable pour cette session (varie à chaque ouverture)
+                        const idx = Math.abs(((sessionSeed + trip.tripId.length * 2654435761) | 0)) % photos.length;
+                        const blob = photos[idx];
+                        const url = URL.createObjectURL(blob);
+                        bg.style.backgroundImage = `url('${url}')`;
+
+                        // libère l'URL au prochain refresh de la liste
+                        card.addEventListener('click', () => { try { URL.revokeObjectURL(url); } catch {} }, { once: true });
+                    } catch {}
+                })();
+            }
+        }
+
+function loadUserConfig() {
+            // Pré-remplir le login (prénom/email) pour gagner du temps
+            try {
+                const last = localStorage.getItem('lastProfile');
+                if (last) {
+                    const p = JSON.parse(last);
+                    if (p?.name) document.getElementById('setupName').value = p.name;
+                    if (p?.email) document.getElementById('setupEmail').value = p.email;
+                }
+            } catch {}
+
             const storedUser = localStorage.getItem('currentUser');
             if (storedUser) {
-                currentUser = JSON.parse(storedUser);
-                showMainApp();
+                try {
+                    currentUser = JSON.parse(storedUser);
+                    showHome();
+                } catch {
+                    showSetupScreen();
+                }
             } else {
                 showSetupScreen();
             }
+        }
+
+        function stableUserIdFromEmail(email) {
+            // SHA-1 simple via WebCrypto si dispo, sinon fallback sur btoa
+            // (le but est juste d'avoir un id stable pour retrouver les road trips)
+            const cleaned = (email || '').trim().toLowerCase();
+            return 'user_' + btoa(unescape(encodeURIComponent(cleaned))).replace(/=+/g,'').slice(0,16);
         }
 
         async function saveUserConfig() {
             try {
                 const name = document.getElementById('setupName').value.trim();
                 const email = document.getElementById('setupEmail').value.trim();
-                const tripName = document.getElementById('setupTripName').value.trim();
-                const comment = document.getElementById('setupComment').value.trim();
 
-                if (!name || !email || !tripName) {
-                    alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
+                if (!name || !email) {
+                    alert('Veuillez remplir le prénom et l\'email');
                     return;
                 }
 
-                const userId = 'user_' + Date.now();
+                const userId = stableUserIdFromEmail(email);
                 currentUser = {
                     id: userId,
-                    name: name,
-                    email: email,
-                    tripName: tripName,
-                    comment: comment,
-                    createdAt: new Date().toISOString()
+                    name,
+                    email,
+                    updatedAt: new Date().toISOString()
                 };
 
-                // localStorage peut être bloqué selon le navigateur / paramètres confidentialité
+                // Conserver pour la prochaine ouverture (prénom + email)
                 try {
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    localStorage.setItem('lastProfile', JSON.stringify({ name, email }));
                 } catch (e) {
-                    console.warn('localStorage indisponible, mode mémoire uniquement', e);
-                    alert("⚠️ Stockage local bloqué par le navigateur." + "\\n" + "Le voyage peut s'ouvrir, mais vos données risquent de ne pas être conservées après fermeture.");
+                    console.warn('localStorage indisponible', e);
                 }
 
-                await initUserData();
-                showMainApp();
+                await ensureUserExists();
+                await migrateLegacySingleTripIfNeeded();
+                await showHome();
             } catch (err) {
-                console.error('Erreur au démarrage du voyage:', err);
-                alert("Erreur : impossible de démarrer le voyage." + "\\n" + "Ouvrez la console (F12) pour voir le détail.");
+                console.error('Erreur login:', err);
+                alert("Erreur : impossible de se connecter.\nOuvrez la console (F12) pour voir le détail.");
             }
+        }
+
+        function openCreateTripModalFromLogin() {
+            // Permet de créer un road trip directement depuis la page de login.
+            // On force juste une validation basique du profil.
+            const name = document.getElementById('setupName').value.trim();
+            const email = document.getElementById('setupEmail').value.trim();
+            if (!name || !email) {
+                alert('Veuillez remplir le prénom et l\'email avant de créer un road trip');
+                return;
+            }
+            // Assure currentUser
+            const userId = stableUserIdFromEmail(email);
+            currentUser = { id: userId, name, email, updatedAt: new Date().toISOString() };
+            try {
+                localStorage.setItem('lastProfile', JSON.stringify({ name, email }));
+            } catch {}
+            openCreateTripModal();
         }
 
 
 
-        // ===== Données utilisateur (IndexedDB) =====
+// ===== Données (IndexedDB) : utilisateurs + road trips + contenu =====
 let tripData = null;
+let currentTripId = null;
+let currentTrip = null;
+
 const DB_NAME = 'roadtrip_offline_db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 function openDB() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(DB_NAME, DB_VERSION);
         req.onupgradeneeded = () => {
             const db = req.result;
+
+            // Ancien store (v1) : tripData { userId -> data }
+            // Nouveau (v2) :
+            // - users { userId }
+            // - trips { tripId, userId, name, startDate, endDate, comment, createdAt }
+            // - tripContent { tripId -> { tripId, days:[...], ... } }
+            if (!db.objectStoreNames.contains('users')) {
+                db.createObjectStore('users', { keyPath: 'userId' });
+            }
+
+            if (!db.objectStoreNames.contains('trips')) {
+                const s = db.createObjectStore('trips', { keyPath: 'tripId' });
+                s.createIndex('userId', 'userId', { unique: false });
+                s.createIndex('startDate', 'startDate', { unique: false });
+            }
+
+            if (!db.objectStoreNames.contains('tripContent')) {
+                db.createObjectStore('tripContent', { keyPath: 'tripId' });
+            }
+
+            // On conserve le store v1 "tripData" s'il existe, pour migration au runtime.
             if (!db.objectStoreNames.contains('tripData')) {
                 db.createObjectStore('tripData', { keyPath: 'userId' });
             }
@@ -923,33 +1258,143 @@ function openDB() {
     });
 }
 
-async function idbGetTripData(userId) {
+async function ensureUserExists() {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const tx = db.transaction('tripData', 'readonly');
-        const req = tx.objectStore('tripData').get(userId);
-        req.onsuccess = () => resolve(req.result ? req.result.data : null);
-        req.onerror = () => reject(req.error);
-    });
-}
-
-async function idbSetTripData(userId, data) {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction('tripData', 'readwrite');
-        tx.objectStore('tripData').put({ userId, data });
+        const tx = db.transaction('users', 'readwrite');
+        tx.objectStore('users').put({
+            userId: currentUser.id,
+            name: currentUser.name || '',
+            email: currentUser.email || '',
+            updatedAt: new Date().toISOString()
+        });
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
     });
 }
 
-function createInitialData() {
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0];
-    return {
+// --- Migration v1 -> v2 (si l'utilisateur avait un seul voyage) ---
+async function migrateLegacySingleTripIfNeeded() {
+    if (!currentUser) return;
+
+    // Si l'utilisateur a déjà des trips v2, rien à faire.
+    const existingTrips = await idbGetTrips(currentUser.id);
+    if (existingTrips.length > 0) return;
+
+    // Lire l'ancien contenu v1
+    let legacy = null;
+    try {
+        const db = await openDB();
+        legacy = await new Promise((resolve) => {
+            const tx = db.transaction('tripData', 'readonly');
+            const req = tx.objectStore('tripData').get(currentUser.id);
+            req.onsuccess = () => resolve(req.result ? req.result.data : null);
+            req.onerror = () => resolve(null);
+        });
+    } catch {}
+
+    if (!legacy || !legacy.days || legacy.days.length === 0) return;
+
+    // Fabrique un trip à partir du contenu existant
+    const startDate = legacy.days[0].date;
+    const endDate = legacy.days[legacy.days.length - 1].date;
+    const tripName = (currentUser.tripName || 'Mon road trip');
+    const comment = (currentUser.comment || '');
+
+    const tripId = 'trip_' + Date.now();
+    const trip = {
+        tripId,
         userId: currentUser.id,
-        days: [{ day: 1, date: dateStr, steps: [] }]
+        name: tripName,
+        startDate,
+        endDate,
+        comment,
+        createdAt: new Date().toISOString()
     };
+
+    // Nettoie les URLs
+    for (const day of legacy.days) {
+        for (const step of day.steps || []) {
+            delete step.photoUrl;
+            delete step.audioUrl;
+        }
+    }
+
+    await idbPutTrip(trip);
+    await idbSetTripContent(tripId, { tripId, days: legacy.days });
+
+    // On peut conserver tripData v1 (au cas où), mais on évite de le recharger.
+}
+
+async function idbPutTrip(trip) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('trips', 'readwrite');
+        tx.objectStore('trips').put(trip);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+async function idbGetTrips(userId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('trips', 'readonly');
+        const idx = tx.objectStore('trips').index('userId');
+        const req = idx.getAll(IDBKeyRange.only(userId));
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbGetTrip(tripId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('trips', 'readonly');
+        const req = tx.objectStore('trips').get(tripId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbGetTripContent(tripId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('tripContent', 'readonly');
+        const req = tx.objectStore('tripContent').get(tripId);
+        req.onsuccess = () => resolve(req.result ? req.result.data : null);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbSetTripContent(tripId, data) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('tripContent', 'readwrite');
+        tx.objectStore('tripContent').put({ tripId, data });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+// Génère un tableau de dates inclusives YYYY-MM-DD
+function datesBetween(startISO, endISO) {
+    const out = [];
+    const start = new Date(startISO + 'T00:00:00');
+    const end = new Date(endISO + 'T00:00:00');
+    if (isNaN(start) || isNaN(end) || start > end) return out;
+    const cur = new Date(start);
+    while (cur <= end) {
+        out.push(cur.toISOString().split('T')[0]);
+        cur.setDate(cur.getDate() + 1);
+    }
+    return out;
+}
+
+function createTripContentFromDates(startISO, endISO) {
+    const ds = datesBetween(startISO, endISO);
+    const days = ds.map((d, i) => ({ day: i + 1, date: d, steps: [] }));
+    return { tripId: null, days };
 }
 
 function attachMediaUrls() {
@@ -978,22 +1423,27 @@ function revokeMediaUrls() {
 
 window.addEventListener('beforeunload', revokeMediaUrls);
 
-async function initUserData() {
-    // Compat : conserve le nom de fonction, mais IndexedDB remplace localStorage.
+async function initTrip(tripId) {
     if (!currentUser) return;
-    const stored = await idbGetTripData(currentUser.id);
+    currentTripId = tripId;
+    currentTrip = await idbGetTrip(tripId);
+    const stored = await idbGetTripContent(tripId);
     if (!stored) {
-        tripData = createInitialData();
-        await idbSetTripData(currentUser.id, tripData);
+        // fallback
+        const today = new Date().toISOString().split('T')[0];
+        tripData = { tripId, days: [{ day: 1, date: today, steps: [] }] };
+        await idbSetTripContent(tripId, tripData);
     } else {
         tripData = stored;
     }
+    tripData.tripId = tripId;
     attachMediaUrls();
 }
 
         function changeUser() {
             if (confirm('Voulez-vous changer d\'utilisateur ? Vos données actuelles seront conservées.')) {
-                localStorage.removeItem('currentUser');
+                localStorage.removeItem('currentUser'); // on garde lastProfile
+
                 location.reload();
             }
         }
@@ -1011,7 +1461,8 @@ async function initUserData() {
         function confirmChangeUser() {
             closeUserMenu();
             if (confirm('Voulez-vous changer d\'utilisateur ?\n\nVos données actuelles seront conservées et vous pourrez y revenir plus tard.')) {
-                localStorage.removeItem('currentUser');
+                localStorage.removeItem('currentUser'); // on garde lastProfile
+
                 location.reload();
             }
         }
@@ -1021,10 +1472,7 @@ async function initUserData() {
             
             // Pré-remplir avec les données actuelles
             document.getElementById('editProfileName').value = currentUser.name || '';
-            document.getElementById('editProfileEmail').value = currentUser.email || '';
-            document.getElementById('editProfileTripName').value = currentUser.tripName || '';
-            document.getElementById('editProfileComment').value = currentUser.comment || '';
-            
+            document.getElementById('editProfileEmail').value = currentUser.email || '';            
             document.getElementById('editProfileModal').classList.add('active');
         }
 
@@ -1035,26 +1483,18 @@ async function initUserData() {
         function saveEditProfile() {
             const name = document.getElementById('editProfileName').value.trim();
             const email = document.getElementById('editProfileEmail').value.trim();
-            const tripName = document.getElementById('editProfileTripName').value.trim();
-            const comment = document.getElementById('editProfileComment').value.trim();
-
-            if (!name || !email || !tripName) {
-                alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
-                return;
-            }
+            
+            if (!name || !email) { alert('Veuillez remplir le prénom et l\'email'); return; }
 
             // Mettre à jour les informations utilisateur
             currentUser.name = name;
             currentUser.email = email;
-            currentUser.tripName = tripName;
-            currentUser.comment = comment;
-            currentUser.updatedAt = new Date().toISOString();
+                        currentUser.updatedAt = new Date().toISOString();
 
             // Sauvegarder
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
             // Mettre à jour l'affichage
-            document.getElementById('headerTripName').textContent = '🏜️ ' + currentUser.tripName;
             document.getElementById('headerUserInfo').textContent = currentUser.name + ' • ' + currentUser.email;
 
             closeEditProfileModal();
@@ -1066,33 +1506,55 @@ async function initUserData() {
             document.getElementById('mainApp').classList.add('hidden');
         }
 
-        async function showMainApp() {
+        async function showHome() {
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            
-            document.getElementById('headerTripName').textContent = '🏜️ ' + currentUser.tripName;
-            document.getElementById('headerSubtitle').textContent = 'Mon carnet de voyage';
+
             document.getElementById('headerUserInfo').textContent = currentUser.name + ' • ' + currentUser.email;
 
-            await loadData();
+            document.getElementById('homeScreen').classList.remove('hidden');
+            document.getElementById('tripScreen').classList.add('hidden');
+
+            await renderTrips();
+        }
+
+        async function backToHome() {
+            revokeMediaUrls();
+            tripData = null;
+            currentTripId = null;
+            currentTrip = null;
+            currentDay = 1;
+            await showHome();
+        }
+
+        async function openTrip(tripId) {
+            await initTrip(tripId);
+            currentDay = 1;
+
+            // header
+            document.getElementById('headerTripName').textContent = '🏜️ ' + (currentTrip?.name || 'Road Trip');
+            document.getElementById('headerSubtitle').textContent = currentTrip?.comment ? currentTrip.comment : 'Mon carnet de voyage';
+
+            const sd = currentTrip?.startDate ? formatDateFR(currentTrip.startDate) : '';
+            const ed = currentTrip?.endDate ? formatDateFR(currentTrip.endDate) : '';
+            document.getElementById('tripDates').textContent = (sd && ed) ? (sd + ' → ' + ed) : '';
+
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('tripScreen').classList.remove('hidden');
+
+            await loadData(); // initTrip already done; kept for compat
             renderDays();
             renderSteps();
         }
 
+        
         function getDataKey() {
     // Compat (plus utilisé pour le stockage principal)
     return 'tripData_' + currentUser.id;
 }
 
-async function loadData() {
-    // Charge depuis IndexedDB
-    await initUserData();
-}
-
-function getData() {
-    return tripData;
-}
-
+async function loadData() { if (currentTripId) { /* already loaded */ } }
+function getData() { return tripData; }
 async function saveData(data) {
     // Sérialise les écritures IndexedDB : sur iOS Safari, des write transactions rapprochées
     // peuvent parfois s'annuler si on en lance plusieurs en parallèle.
@@ -1109,7 +1571,7 @@ async function saveData(data) {
 
     // Enfile la sauvegarde
     saveQueue = saveQueue.then(async () => {
-        await idbSetTripData(currentUser.id, clean);
+        await idbSetTripContent(currentTripId, clean);
     });
 
     try {
@@ -1122,6 +1584,8 @@ async function saveData(data) {
 }
 
 function renderDays() {
+            // S'assure que les miniatures photo existent avant rendu
+            attachMediaUrls();
             const data = getData();
             const container = document.getElementById('dayButtons');
             container.innerHTML = '';
@@ -1651,6 +2115,8 @@ function dataURLToBlob(dataUrl) {
         }
 
         function renderSteps() {
+            // S'assure que les URLs blob existent avant rendu (fix iOS: photo visible sans refresh)
+            attachMediaUrls();
             const data = getData();
             const dayData = data.days.find(d => d.day === currentDay);
             const container = document.getElementById('stepsContainer');
@@ -1692,6 +2158,7 @@ function dataURLToBlob(dataUrl) {
 
         async function exportToPDF() {
     const data = getData();
+    const tripTitle = (currentTrip && currentTrip.name) ? currentTrip.name : 'RoadBook';
 
     // Convertit un Blob en DataURL (pour pouvoir l'intégrer dans un HTML exporté)
     const blobToDataURL = (blob) => new Promise((resolve, reject) => {
@@ -1705,7 +2172,7 @@ function dataURLToBlob(dataUrl) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>${currentUser.tripName}</title>
+    <title>${tripTitle}</title>
     <style>
         @page { margin: 2cm; }
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
@@ -1727,7 +2194,7 @@ function dataURLToBlob(dataUrl) {
     </style>
 </head>
 <body>
-    <h1>🏜️ ${currentUser.tripName}</h1>
+    <h1>🏜️ ${tripTitle}</h1>
     <div class="user-info">Carnet de voyage de ${currentUser.name} (${currentUser.email})</div>
     ${currentUser.comment ? `<div class="user-comment">${currentUser.comment}</div>` : ''}
 `;
@@ -1791,7 +2258,7 @@ function dataURLToBlob(dataUrl) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${currentUser.tripName.replace(/[^a-z0-9]/gi, '_')}_carnet.html`;
+    a.download = `${tripTitle.replace(/[^a-z0-9]/gi, '_')}_carnet.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1811,7 +2278,7 @@ function dataURLToBlob(dataUrl) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `backup_${currentUser.tripName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `backup_${tripTitle.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
