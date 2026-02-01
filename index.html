@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
@@ -1247,8 +1246,7 @@ function renderDays() {
             editingDayNumber = null;
             document.getElementById('editDayModal').classList.remove('active');
         }
-
-        function saveEditDay() {
+        async function saveEditDay() {
             if (!editingDayNumber) return;
             
             const day = document.getElementById('editDaySelect').value;
