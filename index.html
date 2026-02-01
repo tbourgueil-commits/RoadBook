@@ -862,7 +862,7 @@ let recordingInterval = null;
             }
         }
 
-        function saveUserConfig() {
+        async function saveUserConfig() {
             try {
                 const name = document.getElementById('setupName').value.trim();
                 const email = document.getElementById('setupEmail').value.trim();
@@ -892,7 +892,7 @@ let recordingInterval = null;
                     alert("⚠️ Stockage local bloqué par le navigateur." + "\\n" + "Le voyage peut s'ouvrir, mais vos données risquent de ne pas être conservées après fermeture.");
                 }
 
-                initUserData();
+                await initUserData();
                 showMainApp();
             } catch (err) {
                 console.error('Erreur au démarrage du voyage:', err);
@@ -989,8 +989,6 @@ async function initUserData() {
     attachMediaUrls();
 }
 
-        }
-
         function changeUser() {
             if (confirm('Voulez-vous changer d\'utilisateur ? Vos données actuelles seront conservées.')) {
                 localStorage.removeItem('currentUser');
@@ -1084,7 +1082,7 @@ async function initUserData() {
     return 'tripData_' + currentUser.id;
 }
 
-async async function loadData() {
+async function loadData() {
     // Charge depuis IndexedDB
     await initUserData();
 }
@@ -1110,13 +1108,7 @@ async function saveData(data) {
     }
 }
 
-catch (e) {
-                // Souvent QuotaExceededError quand les photos sont trop lourdes
-                throw new Error('Stockage plein (quota localStorage). Essayez de supprimer d’anciennes étapes / jours, ou réduisez la taille des photos.');
-            }
-        }
-
-        function renderDays() {
+function renderDays() {
             const data = getData();
             const container = document.getElementById('dayButtons');
             container.innerHTML = '';
@@ -1192,7 +1184,7 @@ catch (e) {
             document.getElementById('addDayModal').classList.remove('active');
         }
 
-        function saveNewDay() {
+        async function saveNewDay() {
             const day = document.getElementById('daySelect').value;
             const month = document.getElementById('monthSelect').value;
             const year = document.getElementById('yearSelect').value;
@@ -1437,7 +1429,7 @@ function dataURLToBlob(dataUrl) {
             return new Blob([bytes], { type: mime });
         }
 
-        async async function savePhotoToLibrary(openShare = true) {
+        async function savePhotoToLibrary(openShare = true) {
             try {
                 if (!currentPhotoBlob) {
                     alert('Aucune photo à sauvegarder.');
