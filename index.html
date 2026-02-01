@@ -707,7 +707,10 @@
   <div class="trip-name" id="homeSubtitle">Choisissez un road trip ou créez-en un nouveau</div>
   <div class="user-info">
     <span id="headerUserInfo"></span>
-    <button class="btn-change-user" onclick="openUserMenu()" type="button">⚙️ Profil</button>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-change-user" onclick="backToHome()" type="button">⬅️ Accueil</button>
+      <button class="btn-change-user" onclick="openUserMenu()" type="button">⚙️ Profil</button>
+    </div>
   </div>
 </div>
 
@@ -722,16 +725,15 @@
     <div class="trip-name" id="headerSubtitle"></div>
     <div class="user-info">
       <span id="tripDates"></span>
-      <button class="btn-change-user" onclick="backToHome()" type="button">⬅️ Accueil</button>
+    </div>
+    <div class="export-buttons-row">
+      <button class="export-btn" onclick="exportToPDF()" type="button">📄 Générer PDF</button>
+      <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;" type="button">Sauvegarder</button>
     </div>
   </div>
 
   <div class="day-selector">
     <div class="day-buttons" id="dayButtons"></div>
-    <div class="export-buttons-row">
-      <button class="export-btn" onclick="exportToPDF()" type="button">📄 Générer PDF</button>
-      <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;" type="button">Sauvegarder</button>
-    </div>
   </div>
 
   <button class="add-step-btn" onclick="openStepModal()" type="button">+ Ajouter une étape</button>
@@ -781,9 +783,6 @@
 <h3>Mon Profil</h3>
 <button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()" type="button">
             ✏️ Modifier mes informations
-        </button>
-<button class="menu-btn menu-btn-change" onclick="confirmChangeUser()" type="button">
-            🔄 Changer d'utilisateur
         </button>
 <button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()" type="button">
             Annuler
@@ -1529,6 +1528,7 @@ async function initTrip(tripId) {
             document.getElementById('userMenu').classList.remove('active');
         }
 
+        /* Fonction supprimée - Changement d'utilisateur désactivé
         function confirmChangeUser() {
             closeUserMenu();
             if (confirm('Voulez-vous changer d\'utilisateur ?\n\nVos données actuelles seront conservées et vous pourrez y revenir plus tard.')) {
@@ -1537,6 +1537,7 @@ async function initTrip(tripId) {
                 location.reload();
             }
         }
+        */
 
         function openEditProfileModal() {
             closeUserMenu();
