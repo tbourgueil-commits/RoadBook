@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Road Trip - Carnet de Voyage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5deb3 0%, #daa520 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .setup-screen {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .setup-screen h1 {
+            color: #d2691e;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .setup-screen p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-field input, .form-field select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .date-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .date-selector select {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: #d2691e;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .btn-primary:active {
+            background: #b8551a;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #d2691e;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header .trip-name {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .header .user-info {
+            color: #999;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-change-user {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .day-selector {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .day-buttons {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            align-items: stretch;
+        }
+
+        .day-btn-container {
+            flex-shrink: 0;
+        }
+
+        .add-day-btn-inline {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            white-space: nowrap;
+            min-width: 90px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .day-btn {
+            background: rgba(240, 240, 240, 0.3);
+            border: 2px solid rgba(221, 221, 221, 0.6);
+            padding: 0;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 16px;
+            transition: all 0.3s;
+            min-width: 90px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .day-btn-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            padding: 25px 5px 5px 5px;
+        }
+
+        .day-mini-photo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+            z-index: 1;
+        }
+
+        .day-btn.active {
+            background: rgba(210, 105, 30, 0.4);
+            border-color: rgba(210, 105, 30, 0.8);
+            border-width: 3px;
+        }
+
+        .day-btn.active .day-mini-photo {
+            opacity: 0.75;
+        }
+
+        .day-btn.active .day-btn-content {
+            background: linear-gradient(to top, rgba(210, 105, 30, 0.9) 0%, rgba(210, 105, 30, 0.6) 50%, transparent 100%);
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 18px;
+            display: block;
+            color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .day-btn.active .day-number {
+            text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .day-date {
+            font-size: 10px;
+            color: white;
+            display: block;
+            margin-top: 2px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .day-btn.active .day-date {
+            color: white;
+        }
+
+        .day-btn-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .edit-day-btn {
+            background: rgba(255, 152, 0, 0.95);
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-top: 3px;
+            display: block;
+            width: calc(100% - 10px);
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 3;
+        }
+
+        .day-btn.active .edit-day-btn {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-weight: bold;
+        }
+
+        .add-day-btn-inline {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: 2px dashed rgba(255,255,255,0.6);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 28px;
+            min-width: 90px;
+            height: 110px;
+            text-align: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .add-day-btn-inline:active {
+            transform: scale(0.95);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .add-step-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        .step-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .step-time {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .step-photo {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .step-comment {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .step-gps {
+            font-size: 12px;
+            color: #666;
+            padding: 8px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .step-gps a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #d2691e;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input[type="file"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .record-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .camera-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .record-btn.recording {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #999;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .gps-status {
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .export-btn {
+            background: #9C27B0;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .export-buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .recording-timer {
+            text-align: center;
+            color: #ff9800;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .user-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            padding: 20px;
+            z-index: 1500;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .user-menu.active {
+            transform: translateY(0);
+        }
+
+        .user-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1400;
+            display: none;
+        }
+
+        .user-menu-overlay.active {
+            display: block;
+        }
+
+        .user-menu h3 {
+            color: #d2691e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-btn-edit {
+            background: #2196F3;
+            color: white;
+        }
+
+        .menu-btn-change {
+            background: #FF9800;
+            color: white;
+        }
+
+        .menu-btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="setupScreen" class="setup-screen">
+            <h1>🏜️ Bienvenue !</h1>
+            <p>Configurez votre carnet de voyage</p>
+            
+            <div class="form-field">
+                <label>Votre nom</label>
+                <input type="text" id="setupName" placeholder="Ex: Thomas">
+            </div>
+            
+            <div class="form-field">
+                <label>Votre email</label>
+                <input type="email" id="setupEmail" placeholder="Ex: thomas@example.com">
+            </div>
+            
+            <div class="form-field">
+                <label>Nom du voyage</label>
+                <input type="text" id="setupTripName" placeholder="Ex: Road Trip Maroc 2026">
+            </div>
+            
+            <div class="form-field">
+                <label>Commentaire / Description (optionnel)</label>
+                <textarea id="setupComment" placeholder="Ex: Voyage en famille à travers le Maroc, montagnes et désert..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
+            </div>
+            
+            <button class="btn-primary" onclick="saveUserConfig()">Commencer mon voyage</button>
+        </div>
+
+        <div id="mainApp" class="hidden">
+            <div class="header">
+                <h1 id="headerTripName">Road Trip</h1>
+                <div class="trip-name" id="headerSubtitle"></div>
+                <div class="user-info">
+                    <span id="headerUserInfo"></span>
+                    <button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
+                </div>
+            </div>
+
+            <div class="day-selector">
+                <div class="day-buttons" id="dayButtons"></div>
+                <div class="export-buttons-row">
+                    <button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
+                    <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
+                </div>
+            </div>
+
+            <button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
+
+            <div id="stepsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un jour -->
+    <div class="modal" id="addDayModal">
+        <div class="modal-content">
+            <h2>📅 Nouveau Jour</h2>
+            
+            <div class="form-group">
+                <label>Sélectionnez la date</label>
+                <div class="date-selector">
+                    <select id="daySelect"></select>
+                    <select id="monthSelect"></select>
+                    <select id="yearSelect"></select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-cancel" onclick="closeAddDayModal()">Annuler</button>
+                <button class="btn-save" onclick="saveNewDay()">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour éditer la date d'un jour -->
+    <div class="modal" id="editDayModal">
+        <div class="modal-content">
+            <h2>📅 Modifier la date du Jour <span id="editDayNumber"></span></h2>
+            
+            <div class="form-group">
+                <label>Nouvelle date</label>
+                <div class="date-selector">
+                    <select id="editDaySelect"></select>
+                    <select id="editMonthSelect"></select>
+                    <select id="editYearSelect"></select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-cancel" onclick="closeEditDayModal()">Annuler</button>
+                <button class="btn-save" onclick="saveEditDay()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu utilisateur -->
+    <div class="user-menu-overlay" id="userMenuOverlay" onclick="closeUserMenu()"></div>
+    <div class="user-menu" id="userMenu">
+        <h3>Mon Profil</h3>
+        <button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()">
+            ✏️ Modifier mes informations
+        </button>
+        <button class="menu-btn menu-btn-change" onclick="confirmChangeUser()">
+            🔄 Changer d'utilisateur
+        </button>
+        <button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()">
+            Annuler
+        </button>
+    </div>
+
+    <!-- Modal pour éditer le profil -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <h2>✏️ Modifier mon profil</h2>
+            
+            <div class="form-field">
+                <label>Votre nom</label>
+                <input type="text" id="editProfileName" placeholder="Ex: Thomas">
+            </div>
+            
+            <div class="form-field">
+                <label>Votre email</label>
+                <input type="email" id="editProfileEmail" placeholder="Ex: thomas@example.com">
+            </div>
+            
+            <div class="form-field">
+                <label>Nom du voyage</label>
+                <input type="text" id="editProfileTripName" placeholder="Ex: Road Trip Maroc 2026">
+            </div>
+            
+            <div class="form-field">
+                <label>Commentaire / Description (optionnel)</label>
+                <textarea id="editProfileComment" placeholder="Ex: Voyage en famille à travers le Maroc..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-cancel" onclick="closeEditProfileModal()">Annuler</button>
+                <button class="btn-save" onclick="saveEditProfile()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter une étape -->
+    <div class="modal" id="stepModal">
+        <div class="modal-content">
+            <h2>Nouvelle Étape</h2>
+            
+            <div class="gps-status" id="gpsStatus">📍 Récupération du GPS...</div>
+
+            <div class="form-group">
+                <label>📸 Photo (optionnelle)</label>
+                <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;">
+                <button class="camera-btn" id="cameraBtn" onclick="openNativeCamera()">
+                    📷 Prendre une photo
+                </button>
+                <img id="photoPreview" class="preview-image" style="display:none;">
+                <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display:none; background:#ff9800;">
+                    🔄 Reprendre une photo
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>🎙️ Mémo Vocal (optionnel)</label>
+                <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                    <span id="recordText">🎙️ Démarrer l'enregistrement</span>
+                </button>
+                <div id="recordingTimer" class="recording-timer" style="display:none;">⏱️ 00:00</div>
+                <audio id="audioPreview" class="audio-player" controls style="display:none;"></audio>
+            </div>
+
+            <div class="form-group">
+                <label>💬 Commentaire (optionnel)</label>
+                <textarea id="commentInput" placeholder="Ajoutez un commentaire..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-cancel" onclick="closeStepModal()">Annuler</button>
+                <button class="btn-save" onclick="saveStep()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentDay = 1;
+        let currentGPS = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let currentAudioBlob = null;
+        let currentPhotoBlob = null;
+        let recordingInterval = null;
+        let recordingStartTime = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserConfig();
+            populateDateSelectors();
+            
+            // Ajouter l'événement onchange au photoInput
+            document.getElementById('photoInput').addEventListener('change', handlePhotoCapture);
+        });
+
+        function populateDateSelectors() {
+            const today = new Date();
+            
+            // Fonction helper pour remplir les sélecteurs
+            function fillSelectors(dayId, monthId, yearId, selectedDate = today) {
+                // Jours
+                const daySelect = document.getElementById(dayId);
+                daySelect.innerHTML = '';
+                for (let i = 1; i <= 31; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    if (i === selectedDate.getDate()) option.selected = true;
+                    daySelect.appendChild(option);
+                }
+                
+                // Mois
+                const monthSelect = document.getElementById(monthId);
+                monthSelect.innerHTML = '';
+                const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
+                              'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                months.forEach((month, index) => {
+                    const option = document.createElement('option');
+                    option.value = index + 1;
+                    option.textContent = month;
+                    if (index === selectedDate.getMonth()) option.selected = true;
+                    monthSelect.appendChild(option);
+                });
+                
+                // Années
+                const yearSelect = document.getElementById(yearId);
+                yearSelect.innerHTML = '';
+                for (let i = today.getFullYear() - 1; i <= today.getFullYear() + 2; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    if (i === selectedDate.getFullYear()) option.selected = true;
+                    yearSelect.appendChild(option);
+                }
+            }
+            
+            // Remplir les sélecteurs pour ajouter un jour
+            fillSelectors('daySelect', 'monthSelect', 'yearSelect', today);
+            
+            // Remplir les sélecteurs pour éditer un jour
+            fillSelectors('editDaySelect', 'editMonthSelect', 'editYearSelect', today);
+        }
+
+        function loadUserConfig() {
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showMainApp();
+            } else {
+                showSetupScreen();
+            }
+        }
+
+        function saveUserConfig() {
+            const name = document.getElementById('setupName').value.trim();
+            const email = document.getElementById('setupEmail').value.trim();
+            const tripName = document.getElementById('setupTripName').value.trim();
+            const comment = document.getElementById('setupComment').value.trim();
+
+            if (!name || !email || !tripName) {
+                alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
+                return;
+            }
+
+            const userId = 'user_' + Date.now();
+            currentUser = {
+                id: userId,
+                name: name,
+                email: email,
+                tripName: tripName,
+                comment: comment,
+                createdAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            initUserData();
+            showMainApp();
+        }
+
+        function initUserData() {
+            const dataKey = 'tripData_' + currentUser.id;
+            const existing = localStorage.getItem(dataKey);
+            if (!existing) {
+                const today = new Date();
+                const dateStr = today.toISOString().split('T')[0];
+                const initialData = {
+                    userId: currentUser.id,
+                    days: [{ day: 1, date: dateStr, steps: [] }]
+                };
+                localStorage.setItem(dataKey, JSON.stringify(initialData));
+            }
+        }
+
+        function changeUser() {
+            if (confirm('Voulez-vous changer d\'utilisateur ? Vos données actuelles seront conservées.')) {
+                localStorage.removeItem('currentUser');
+                location.reload();
+            }
+        }
+
+        function openUserMenu() {
+            document.getElementById('userMenuOverlay').classList.add('active');
+            document.getElementById('userMenu').classList.add('active');
+        }
+
+        function closeUserMenu() {
+            document.getElementById('userMenuOverlay').classList.remove('active');
+            document.getElementById('userMenu').classList.remove('active');
+        }
+
+        function confirmChangeUser() {
+            closeUserMenu();
+            if (confirm('Voulez-vous changer d\'utilisateur ?\n\nVos données actuelles seront conservées et vous pourrez y revenir plus tard.')) {
+                localStorage.removeItem('currentUser');
+                location.reload();
+            }
+        }
+
+        function openEditProfileModal() {
+            closeUserMenu();
+            
+            // Pré-remplir avec les données actuelles
+            document.getElementById('editProfileName').value = currentUser.name || '';
+            document.getElementById('editProfileEmail').value = currentUser.email || '';
+            document.getElementById('editProfileTripName').value = currentUser.tripName || '';
+            document.getElementById('editProfileComment').value = currentUser.comment || '';
+            
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        function saveEditProfile() {
+            const name = document.getElementById('editProfileName').value.trim();
+            const email = document.getElementById('editProfileEmail').value.trim();
+            const tripName = document.getElementById('editProfileTripName').value.trim();
+            const comment = document.getElementById('editProfileComment').value.trim();
+
+            if (!name || !email || !tripName) {
+                alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
+                return;
+            }
+
+            // Mettre à jour les informations utilisateur
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.tripName = tripName;
+            currentUser.comment = comment;
+            currentUser.updatedAt = new Date().toISOString();
+
+            // Sauvegarder
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // Mettre à jour l'affichage
+            document.getElementById('headerTripName').textContent = '🏜️ ' + currentUser.tripName;
+            document.getElementById('headerUserInfo').textContent = currentUser.name + ' • ' + currentUser.email;
+
+            closeEditProfileModal();
+            alert('Profil mis à jour avec succès !');
+        }
+
+        function showSetupScreen() {
+            document.getElementById('setupScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            document.getElementById('headerTripName').textContent = '🏜️ ' + currentUser.tripName;
+            document.getElementById('headerSubtitle').textContent = 'Mon carnet de voyage';
+            document.getElementById('headerUserInfo').textContent = currentUser.name + ' • ' + currentUser.email;
+
+            loadData();
+            renderDays();
+            renderSteps();
+        }
+
+        function getDataKey() {
+            return 'tripData_' + currentUser.id;
+        }
+
+        function loadData() {
+            const key = getDataKey();
+            const stored = localStorage.getItem(key);
+            if (!stored) {
+                initUserData();
+            }
+        }
+
+        function getData() {
+            const key = getDataKey();
+            return JSON.parse(localStorage.getItem(key));
+        }
+
+        function saveData(data) {
+            const key = getDataKey();
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function renderDays() {
+            const data = getData();
+            const container = document.getElementById('dayButtons');
+            container.innerHTML = '';
+            
+            data.days.forEach(dayObj => {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'day-btn-container';
+                
+                const btn = document.createElement('button');
+                btn.className = 'day-btn' + (dayObj.day === currentDay ? ' active' : '');
+                
+                // Récupérer la première photo du jour s'il y en a une
+                const firstPhotoStep = dayObj.steps.find(step => step.photo);
+                
+                // Si une photo existe, l'ajouter en fond
+                if (firstPhotoStep && firstPhotoStep.photo) {
+                    const miniPhoto = document.createElement('img');
+                    miniPhoto.className = 'day-mini-photo';
+                    miniPhoto.src = firstPhotoStep.photo;
+                    btn.appendChild(miniPhoto);
+                }
+                
+                // Formater la date complète
+                const dateObj = new Date(dayObj.date + 'T00:00:00');
+                const dateFormatted = dateObj.toLocaleDateString('fr-FR', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                });
+                
+                // Contenu du bouton (juste la date, sans "Jour X")
+                const content = document.createElement('div');
+                content.className = 'day-btn-content';
+                content.innerHTML = `<span class="day-number">${dayObj.day}</span><span class="day-date">${dateFormatted}</span>`;
+                btn.appendChild(content);
+                
+                btn.onclick = () => selectDay(dayObj.day);
+                
+                // Bouton pour éditer la date
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-day-btn';
+                editBtn.textContent = '✏️ Modifier';
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openEditDayModal(dayObj.day);
+                };
+                
+                btn.appendChild(editBtn);
+                btnContainer.appendChild(btn);
+                container.appendChild(btnContainer);
+            });
+            
+            // Ajouter le bouton "+ Nouveau Jour" à la fin
+            const addDayBtn = document.createElement('button');
+            addDayBtn.className = 'add-day-btn-inline';
+            addDayBtn.innerHTML = '➕';
+            addDayBtn.title = 'Nouveau Jour';
+            addDayBtn.onclick = openAddDayModal;
+            container.appendChild(addDayBtn);
+        }
+
+        function selectDay(day) {
+            currentDay = day;
+            renderDays();
+            renderSteps();
+        }
+
+        function openAddDayModal() {
+            document.getElementById('addDayModal').classList.add('active');
+        }
+
+        function closeAddDayModal() {
+            document.getElementById('addDayModal').classList.remove('active');
+        }
+
+        function saveNewDay() {
+            const day = document.getElementById('daySelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const year = document.getElementById('yearSelect').value;
+            
+            const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+            const data = getData();
+            const newDayNumber = Math.max(...data.days.map(d => d.day)) + 1;
+            data.days.push({ 
+                day: newDayNumber, 
+                date: dateStr,
+                steps: [] 
+            });
+            saveData(data);
+            currentDay = newDayNumber;
+            
+            closeAddDayModal();
+            renderDays();
+            renderSteps();
+        }
+
+        let editingDayNumber = null;
+
+        function openEditDayModal(dayNumber) {
+            editingDayNumber = dayNumber;
+            
+            const data = getData();
+            const dayData = data.days.find(d => d.day === dayNumber);
+            
+            if (!dayData) return;
+            
+            // Afficher le numéro du jour dans le titre
+            document.getElementById('editDayNumber').textContent = dayNumber;
+            
+            // Pré-remplir avec la date actuelle du jour
+            const currentDate = new Date(dayData.date + 'T00:00:00');
+            
+            document.getElementById('editDaySelect').value = currentDate.getDate();
+            document.getElementById('editMonthSelect').value = currentDate.getMonth() + 1;
+            document.getElementById('editYearSelect').value = currentDate.getFullYear();
+            
+            document.getElementById('editDayModal').classList.add('active');
+        }
+
+        function closeEditDayModal() {
+            editingDayNumber = null;
+            document.getElementById('editDayModal').classList.remove('active');
+        }
+
+        function saveEditDay() {
+            if (!editingDayNumber) return;
+            
+            const day = document.getElementById('editDaySelect').value;
+            const month = document.getElementById('editMonthSelect').value;
+            const year = document.getElementById('editYearSelect').value;
+            
+            const newDateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            
+            const data = getData();
+            const dayData = data.days.find(d => d.day === editingDayNumber);
+            
+            if (dayData) {
+                dayData.date = newDateStr;
+                saveData(data);
+            }
+            
+            closeEditDayModal();
+            renderDays();
+        }
+
+        function resetForm() {
+            // Reset input file
+            const photoInput = document.getElementById('photoInput');
+            photoInput.value = '';
+            
+            // Reset preview et boutons
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('photoPreview').src = '';
+            document.getElementById('cameraBtn').style.display = 'block';
+            document.getElementById('retakeBtn').style.display = 'none';
+            
+            // Reset audio
+            document.getElementById('audioPreview').style.display = 'none';
+            document.getElementById('audioPreview').src = '';
+            document.getElementById('recordingTimer').style.display = 'none';
+            document.getElementById('recordBtn').classList.remove('recording');
+            document.getElementById('recordText').textContent = '🎙️ Démarrer l\'enregistrement';
+            
+            // Reset commentaire
+            document.getElementById('commentInput').value = '';
+            
+            // Reset variables globales
+            currentPhotoBlob = null;
+            currentAudioBlob = null;
+            currentGPS = null;
+            
+            // Arrêter enregistrement si en cours
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+            }
+            if (recordingInterval) {
+                clearInterval(recordingInterval);
+                recordingInterval = null;
+            }
+        }
+
+        function openStepModal() {
+            resetForm();
+            document.getElementById('stepModal').classList.add('active');
+            getCurrentPosition();
+        }
+
+        function closeStepModal() {
+            resetForm();
+            document.getElementById('stepModal').classList.remove('active');
+        }
+
+        function openNativeCamera() {
+            document.getElementById('photoInput').click();
+        }
+
+        function handlePhotoCapture(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentPhotoBlob = e.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('cameraBtn').style.display = 'none';
+                    document.getElementById('retakeBtn').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function retakePhoto() {
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('photoPreview').src = '';
+            document.getElementById('retakeBtn').style.display = 'none';
+            document.getElementById('cameraBtn').style.display = 'block';
+            currentPhotoBlob = null;
+        }
+
+        function getCurrentPosition() {
+            const status = document.getElementById('gpsStatus');
+            
+            if (!navigator.geolocation) {
+                status.innerHTML = '❌ GPS non disponible';
+                status.style.background = '#ffebee';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    currentGPS = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+                    status.innerHTML = `✅ GPS: ${currentGPS.lat.toFixed(6)}, ${currentGPS.lng.toFixed(6)}`;
+                    status.style.background = '#e8f5e9';
+                },
+                error => {
+                    status.innerHTML = '⚠️ GPS non autorisé ou indisponible';
+                    status.style.background = '#fff3e0';
+                    currentGPS = null;
+                }
+            );
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('recordingTimer').textContent = `⏱️ ${minutes}:${seconds}`;
+        }
+
+        async function toggleRecording() {
+            const btn = document.getElementById('recordBtn');
+            const text = document.getElementById('recordText');
+            const timer = document.getElementById('recordingTimer');
+
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                try {
+                    const constraints = { audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 44100 } };
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    
+                    let options = { mimeType: 'audio/mp4' };
+                    if (!MediaRecorder.isTypeSupported('audio/mp4')) {
+                        options = { mimeType: 'audio/webm' };
+                        if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                            options = {};
+                        }
+                    }
+                    
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    mediaRecorder.stream = stream;
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                        const audioBlob = new Blob(audioChunks, { type: mimeType });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            currentAudioBlob = reader.result;
+                            const preview = document.getElementById('audioPreview');
+                            preview.src = audioUrl;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(audioBlob);
+
+                        stream.getTracks().forEach(track => track.stop());
+                        if (recordingInterval) clearInterval(recordingInterval);
+                        timer.style.display = 'none';
+                    };
+
+                    mediaRecorder.start();
+                    btn.classList.add('recording');
+                    text.textContent = '⏹️ Arrêter l\'enregistrement';
+                    
+                    recordingStartTime = Date.now();
+                    timer.style.display = 'block';
+                    updateTimer();
+                    recordingInterval = setInterval(updateTimer, 1000);
+                    
+                } catch (error) {
+                    alert('Impossible d\'accéder au microphone.');
+                }
+            } else {
+                mediaRecorder.stop();
+                btn.classList.remove('recording');
+                text.textContent = '🎙️ Démarrer l\'enregistrement';
+            }
+        }
+
+        function saveStep() {
+            const comment = document.getElementById('commentInput').value.trim();
+            
+            if (!currentPhotoBlob && !currentAudioBlob && !comment) {
+                alert('Veuillez ajouter au moins une photo, un mémo vocal ou un commentaire');
+                return;
+            }
+
+            const data = getData();
+            const dayData = data.days.find(d => d.day === currentDay);
+            
+            const step = {
+                id: Date.now() + Math.random(),
+                timestamp: new Date().toISOString(),
+                photo: currentPhotoBlob,
+                audio: currentAudioBlob,
+                comment: comment,
+                gps: currentGPS
+            };
+
+            dayData.steps.push(step);
+            saveData(data);
+            
+            closeStepModal();
+            renderSteps();
+            renderDays(); // Rafraîchir les jours pour mettre à jour la mini photo
+        }
+
+        function renderSteps() {
+            const data = getData();
+            const dayData = data.days.find(d => d.day === currentDay);
+            const container = document.getElementById('stepsContainer');
+            
+            if (!dayData || dayData.steps.length === 0) {
+                container.innerHTML = '<div class="empty-state">Aucune étape pour ce jour.<br>Commencez à documenter votre voyage !</div>';
+                return;
+            }
+
+            container.innerHTML = dayData.steps.map(step => {
+                const date = new Date(step.timestamp);
+                const timeStr = date.toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-time">🕐 ${timeStr}</div>
+                            <button class="delete-btn" onclick="deleteStep(${step.id})">Supprimer</button>
+                        </div>
+                        ${step.photo ? `<img src="${step.photo}" class="step-photo" alt="Photo">` : ''}
+                        ${step.audio ? `<audio src="${step.audio}" class="audio-player" controls></audio>` : ''}
+                        ${step.comment ? `<div class="step-comment">${step.comment}</div>` : ''}
+                        ${step.gps ? `<div class="step-gps">📍 <a href="https://www.google.com/maps?q=${step.gps.lat},${step.gps.lng}" target="_blank">C'était ici</a></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteStep(stepId) {
+            if (!confirm('Supprimer cette étape ?')) return;
+            
+            const data = getData();
+            const dayData = data.days.find(d => d.day === currentDay);
+            dayData.steps = dayData.steps.filter(s => s.id !== stepId);
+            saveData(data);
+            renderSteps();
+            renderDays(); // Rafraîchir les jours pour mettre à jour la mini photo
+        }
+
+        function exportToPDF() {
+            const data = getData();
+            
+            let html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>${currentUser.tripName}</title>
+    <style>
+        @page { margin: 2cm; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        h1 { color: #d2691e; border-bottom: 3px solid #d2691e; padding-bottom: 10px; }
+        .user-info { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .user-comment { background: #f5deb3; padding: 15px; border-radius: 8px; margin-bottom: 30px; font-style: italic; }
+        .day { page-break-before: always; margin-bottom: 40px; }
+        .day:first-of-type { page-break-before: avoid; }
+        .day-header { background: #f5deb3; padding: 15px; margin-bottom: 20px; border-left: 5px solid #d2691e; }
+        .day-title { font-size: 24px; color: #d2691e; margin: 0; }
+        .day-date { color: #666; font-size: 14px; margin-top: 5px; }
+        .step { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; page-break-inside: avoid; }
+        .step-time { color: #999; font-size: 14px; margin-bottom: 10px; }
+        .step-photo { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
+        .step-comment { background: #f9f9f9; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .step-audio-note { background: #fff3e0; padding: 10px; border-radius: 5px; margin: 10px 0; color: #ff9800; }
+        .step-gps { background: #e8f5e9; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .step-gps a { color: #0066cc; text-decoration: none; font-weight: bold; }
+        .no-steps { color: #999; font-style: italic; padding: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>🏜️ ${currentUser.tripName}</h1>
+    <div class="user-info">Carnet de voyage de ${currentUser.name} (${currentUser.email})</div>
+    ${currentUser.comment ? `<div class="user-comment">${currentUser.comment}</div>` : ''}
+`;
+
+            data.days.forEach(day => {
+                const dateFormatted = new Date(day.date + 'T00:00:00').toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                html += `
+    <div class="day">
+        <div class="day-header">
+            <h2 class="day-title">Jour ${day.day}</h2>
+            <div class="day-date">${dateFormatted}</div>
+        </div>
+`;
+
+                if (day.steps.length === 0) {
+                    html += `<div class="no-steps">Aucune étape pour ce jour</div>`;
+                } else {
+                    day.steps.forEach(step => {
+                        const stepTime = new Date(step.timestamp).toLocaleTimeString('fr-FR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        html += `<div class="step"><div class="step-time">🕐 ${stepTime}</div>`;
+                        
+                        if (step.photo) {
+                            html += `<img src="${step.photo}" class="step-photo" alt="Photo de l'étape">`;
+                        }
+                        
+                        if (step.audio) {
+                            html += `<div class="step-audio-note">🎙️ Mémo vocal enregistré pour cette étape</div>`;
+                        }
+                        
+                        if (step.comment) {
+                            html += `<div class="step-comment">${step.comment}</div>`;
+                        }
+                        
+                        if (step.gps) {
+                            const mapsUrl = `https://www.google.com/maps?q=${step.gps.lat},${step.gps.lng}`;
+                            html += `<div class="step-gps">📍 <a href="${mapsUrl}" target="_blank">C'était ici</a> (${step.gps.lat.toFixed(6)}, ${step.gps.lng.toFixed(6)})</div>`;
+                        }
+
+                        html += `</div>`;
+                    });
+                }
+
+                html += `</div>`;
+            });
+
+            html += `</body></html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentUser.tripName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Fichier HTML téléchargé ! Ouvrez-le et utilisez "Imprimer > Enregistrer en PDF" sur votre ordinateur.');
+        }
+
+        function exportBackup() {
+            const allData = {
+                user: currentUser,
+                tripData: getData(),
+                exportDate: new Date().toISOString()
+            };
+            const dataStr = JSON.stringify(allData);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_${currentUser.tripName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Sauvegarde téléchargée ! Conservez ce fichier précieusement.');
+        }
+    </script>
+</body>
+</html>
