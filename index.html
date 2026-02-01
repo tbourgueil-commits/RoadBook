@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
@@ -791,6 +790,8 @@ let currentUser = null;
                 let photoSavedToDevice = false;
 let recordingInterval = null;
         let recordingStartTime = 0;
+        let saveQueue = Promise.resolve(); // serialize IndexedDB writes (important on iOS)
+
 
         document.addEventListener('DOMContentLoaded', function() {
             loadUserConfig();
@@ -1093,8 +1094,11 @@ function getData() {
 }
 
 async function saveData(data) {
+    // Sérialise les écritures IndexedDB : sur iOS Safari, des write transactions rapprochées
+    // peuvent parfois s'annuler si on en lance plusieurs en parallèle.
     tripData = data;
-    // Les URLs d'objets ne sont pas sérialisables → on les retire avant la sauvegarde.
+
+    // On prépare une copie sans URLs d'objets (non sérialisables).
     const clean = structuredClone(data);
     for (const day of clean.days || []) {
         for (const step of day.steps || []) {
@@ -1102,9 +1106,17 @@ async function saveData(data) {
             delete step.audioUrl;
         }
     }
-    try {
+
+    // Enfile la sauvegarde
+    saveQueue = saveQueue.then(async () => {
         await idbSetTripData(currentUser.id, clean);
+    });
+
+    try {
+        await saveQueue;
     } catch (e) {
+        // Remet la queue dans un état sain pour les prochains essais
+        saveQueue = Promise.resolve();
         throw new Error('Impossible de sauvegarder (IndexedDB). Stockage potentiellement plein ou bloqué.');
     }
 }
@@ -1249,7 +1261,8 @@ function renderDays() {
             
             if (dayData) {
                 dayData.date = newDateStr;
-                saveData(data);
+                await saveData(data);
+                attachMediaUrls();
             }
             
             closeEditDayModal();
@@ -1350,6 +1363,9 @@ function renderDays() {
                     saveStatus.style.color = '#666';
                     saveStatus.textContent = 'Astuce : sur iPhone, la sauvegarde directe dans Photos dépend du navigateur. Le bouton ouvre le partage ou télécharge l’image.';
                 }
+                // iOS: permettre plusieurs prises successives (même nom de fichier)
+                try { event.target.value = ''; } catch {}
+
             } catch (err) {
                 currentPhotoBlob = null;
                 if (saveStatus) {
@@ -1599,7 +1615,7 @@ function dataURLToBlob(dataUrl) {
             // Tente de sauvegarder la photo sur l'appareil (sans ouvrir le partage automatiquement)
             if (currentPhotoBlob && !photoSavedToDevice) {
                 // Best effort: téléchargement (souvent vers "Fichiers" sur iOS)
-                savePhotoToLibrary(false);
+                await savePhotoToLibrary(false);
             }
 
             const data = getData();
@@ -1621,7 +1637,8 @@ function dataURLToBlob(dataUrl) {
             dayData.steps.push(step);
 
             try {
-                saveData(data);
+                await saveData(data);
+                attachMediaUrls();
             } catch (e) {
                 // Annuler l'ajout si on ne peut pas sauvegarder
                 dayData.steps.pop();
