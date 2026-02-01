@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Road Trip - Carnet de Voyage</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta name="theme-color" content="#0f172a"/>
+<title>Road Trip - Carnet de Voyage</title>
+<link rel="manifest" href="manifest.json">
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -620,201 +623,182 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="setupScreen" class="setup-screen">
-            <h1>🏜️ Bienvenue !</h1>
-            <p>Configurez votre carnet de voyage</p>
-            
-            <div class="form-field">
-                <label>Votre nom</label>
-                <input type="text" id="setupName" placeholder="Ex: Thomas">
-            </div>
-            
-            <div class="form-field">
-                <label>Votre email</label>
-                <input type="email" id="setupEmail" placeholder="Ex: thomas@example.com">
-            </div>
-            
-            <div class="form-field">
-                <label>Nom du voyage</label>
-                <input type="text" id="setupTripName" placeholder="Ex: Road Trip Maroc 2026">
-            </div>
-            
-            <div class="form-field">
-                <label>Commentaire / Description (optionnel)</label>
-                <textarea id="setupComment" placeholder="Ex: Voyage en famille à travers le Maroc, montagnes et désert..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
-            </div>
-            
-            <button class="btn-primary" onclick="saveUserConfig()">Commencer mon voyage</button>
-        </div>
-
-        <div id="mainApp" class="hidden">
-            <div class="header">
-                <h1 id="headerTripName">Road Trip</h1>
-                <div class="trip-name" id="headerSubtitle"></div>
-                <div class="user-info">
-                    <span id="headerUserInfo"></span>
-                    <button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
-                </div>
-            </div>
-
-            <div class="day-selector">
-                <div class="day-buttons" id="dayButtons"></div>
-                <div class="export-buttons-row">
-                    <button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
-                    <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
-                </div>
-            </div>
-
-            <button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
-
-            <div id="stepsContainer"></div>
-        </div>
-    </div>
-
-    <!-- Modal pour ajouter un jour -->
-    <div class="modal" id="addDayModal">
-        <div class="modal-content">
-            <h2>📅 Nouveau Jour</h2>
-            
-            <div class="form-group">
-                <label>Sélectionnez la date</label>
-                <div class="date-selector">
-                    <select id="daySelect"></select>
-                    <select id="monthSelect"></select>
-                    <select id="yearSelect"></select>
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button class="btn-cancel" onclick="closeAddDayModal()">Annuler</button>
-                <button class="btn-save" onclick="saveNewDay()">Créer</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal pour éditer la date d'un jour -->
-    <div class="modal" id="editDayModal">
-        <div class="modal-content">
-            <h2>📅 Modifier la date du Jour <span id="editDayNumber"></span></h2>
-            
-            <div class="form-group">
-                <label>Nouvelle date</label>
-                <div class="date-selector">
-                    <select id="editDaySelect"></select>
-                    <select id="editMonthSelect"></select>
-                    <select id="editYearSelect"></select>
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button class="btn-cancel" onclick="closeEditDayModal()">Annuler</button>
-                <button class="btn-save" onclick="saveEditDay()">Sauvegarder</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Menu utilisateur -->
-    <div class="user-menu-overlay" id="userMenuOverlay" onclick="closeUserMenu()"></div>
-    <div class="user-menu" id="userMenu">
-        <h3>Mon Profil</h3>
-        <button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()">
+<div class="container">
+<div class="setup-screen" id="setupScreen">
+<h1>🏜️ Bienvenue !</h1>
+<p>Configurez votre carnet de voyage</p>
+<div class="form-field">
+<label>Votre nom</label>
+<input id="setupName" placeholder="Ex: Thomas" type="text"/>
+</div>
+<div class="form-field">
+<label>Votre email</label>
+<input id="setupEmail" placeholder="Ex: thomas@example.com" type="email"/>
+</div>
+<div class="form-field">
+<label>Nom du voyage</label>
+<input id="setupTripName" placeholder="Ex: Road Trip Maroc 2026" type="text"/>
+</div>
+<div class="form-field">
+<label>Commentaire / Description (optionnel)</label>
+<textarea id="setupComment" placeholder="Ex: Voyage en famille à travers le Maroc, montagnes et désert..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
+</div>
+<button class="btn-primary" id="startTripBtn" onclick="saveUserConfig()">Commencer mon voyage</button>
+</div>
+<div class="hidden" id="mainApp">
+<div class="header">
+<h1 id="headerTripName">Road Trip</h1>
+<div class="trip-name" id="headerSubtitle"></div>
+<div class="user-info">
+<span id="headerUserInfo"></span>
+<button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
+</div>
+</div>
+<div class="day-selector">
+<div class="day-buttons" id="dayButtons"></div>
+<div class="export-buttons-row">
+<button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
+<button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
+</div>
+</div>
+<button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
+<div id="stepsContainer"></div>
+</div>
+</div>
+<!-- Modal pour ajouter un jour -->
+<div class="modal" id="addDayModal">
+<div class="modal-content">
+<h2>📅 Nouveau Jour</h2>
+<div class="form-group">
+<label>Sélectionnez la date</label>
+<div class="date-selector">
+<select id="daySelect"></select>
+<select id="monthSelect"></select>
+<select id="yearSelect"></select>
+</div>
+</div>
+<div class="button-group">
+<button class="btn-cancel" onclick="closeAddDayModal()">Annuler</button>
+<button class="btn-save" onclick="saveNewDay()">Créer</button>
+</div>
+</div>
+</div>
+<!-- Modal pour éditer la date d'un jour -->
+<div class="modal" id="editDayModal">
+<div class="modal-content">
+<h2>📅 Modifier la date du Jour <span id="editDayNumber"></span></h2>
+<div class="form-group">
+<label>Nouvelle date</label>
+<div class="date-selector">
+<select id="editDaySelect"></select>
+<select id="editMonthSelect"></select>
+<select id="editYearSelect"></select>
+</div>
+</div>
+<div class="button-group">
+<button class="btn-cancel" onclick="closeEditDayModal()">Annuler</button>
+<button class="btn-save" onclick="saveEditDay()">Sauvegarder</button>
+</div>
+</div>
+</div>
+<!-- Menu utilisateur -->
+<div class="user-menu-overlay" id="userMenuOverlay" onclick="closeUserMenu()"></div>
+<div class="user-menu" id="userMenu">
+<h3>Mon Profil</h3>
+<button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()">
             ✏️ Modifier mes informations
         </button>
-        <button class="menu-btn menu-btn-change" onclick="confirmChangeUser()">
+<button class="menu-btn menu-btn-change" onclick="confirmChangeUser()">
             🔄 Changer d'utilisateur
         </button>
-        <button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()">
+<button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()">
             Annuler
         </button>
-    </div>
-
-    <!-- Modal pour éditer le profil -->
-    <div class="modal" id="editProfileModal">
-        <div class="modal-content">
-            <h2>✏️ Modifier mon profil</h2>
-            
-            <div class="form-field">
-                <label>Votre nom</label>
-                <input type="text" id="editProfileName" placeholder="Ex: Thomas">
-            </div>
-            
-            <div class="form-field">
-                <label>Votre email</label>
-                <input type="email" id="editProfileEmail" placeholder="Ex: thomas@example.com">
-            </div>
-            
-            <div class="form-field">
-                <label>Nom du voyage</label>
-                <input type="text" id="editProfileTripName" placeholder="Ex: Road Trip Maroc 2026">
-            </div>
-            
-            <div class="form-field">
-                <label>Commentaire / Description (optionnel)</label>
-                <textarea id="editProfileComment" placeholder="Ex: Voyage en famille à travers le Maroc..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
-            </div>
-
-            <div class="button-group">
-                <button class="btn-cancel" onclick="closeEditProfileModal()">Annuler</button>
-                <button class="btn-save" onclick="saveEditProfile()">Sauvegarder</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal pour ajouter une étape -->
-    <div class="modal" id="stepModal">
-        <div class="modal-content">
-            <h2>Nouvelle Étape</h2>
-            
-            <div class="gps-status" id="gpsStatus">📍 Récupération du GPS...</div>
-
-            <div class="form-group">
-                <label>📸 Photo (optionnelle)</label>
-                <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;">
-                <button class="camera-btn" id="cameraBtn" onclick="openNativeCamera()">
+</div>
+<!-- Modal pour éditer le profil -->
+<div class="modal" id="editProfileModal">
+<div class="modal-content">
+<h2>✏️ Modifier mon profil</h2>
+<div class="form-field">
+<label>Votre nom</label>
+<input id="editProfileName" placeholder="Ex: Thomas" type="text"/>
+</div>
+<div class="form-field">
+<label>Votre email</label>
+<input id="editProfileEmail" placeholder="Ex: thomas@example.com" type="email"/>
+</div>
+<div class="form-field">
+<label>Nom du voyage</label>
+<input id="editProfileTripName" placeholder="Ex: Road Trip Maroc 2026" type="text"/>
+</div>
+<div class="form-field">
+<label>Commentaire / Description (optionnel)</label>
+<textarea id="editProfileComment" placeholder="Ex: Voyage en famille à travers le Maroc..." style="min-height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; resize: vertical;"></textarea>
+</div>
+<div class="button-group">
+<button class="btn-cancel" onclick="closeEditProfileModal()">Annuler</button>
+<button class="btn-save" onclick="saveEditProfile()">Sauvegarder</button>
+</div>
+</div>
+</div>
+<!-- Modal pour ajouter une étape -->
+<div class="modal" id="stepModal">
+<div class="modal-content">
+<h2>Nouvelle Étape</h2>
+<div class="gps-status" id="gpsStatus">📍 Récupération du GPS...</div>
+<div class="form-group">
+<label>📸 Photo (optionnelle)</label>
+<input accept="image/*" capture="environment" id="photoInput" style="display:none;" type="file"/>
+<button class="camera-btn" id="cameraBtn" onclick="openNativeCamera()">
                     📷 Prendre une photo
                 </button>
-                <img id="photoPreview" class="preview-image" style="display:none;">
-                <button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display:none; background:#ff9800;">
+<img class="preview-image" id="photoPreview" style="display:none;"/>
+<button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display:none; background:#ff9800;">
                     🔄 Reprendre une photo
                 </button>
-            </div>
-
-            <div class="form-group">
-                <label>🎙️ Mémo Vocal (optionnel)</label>
-                <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
-                    <span id="recordText">🎙️ Démarrer l'enregistrement</span>
+<button class="camera-btn" id="saveToGalleryBtn" onclick="savePhotoToLibrary(true)" style="display:none; background:#4CAF50;">
+                    💾 Sauvegarder dans la photothèque
                 </button>
-                <div id="recordingTimer" class="recording-timer" style="display:none;">⏱️ 00:00</div>
-                <audio id="audioPreview" class="audio-player" controls style="display:none;"></audio>
-            </div>
-
-            <div class="form-group">
-                <label>💬 Commentaire (optionnel)</label>
-                <textarea id="commentInput" placeholder="Ajoutez un commentaire..."></textarea>
-            </div>
-
-            <div class="button-group">
-                <button class="btn-cancel" onclick="closeStepModal()">Annuler</button>
-                <button class="btn-save" onclick="saveStep()">Sauvegarder</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let currentUser = null;
+<div id="saveToGalleryStatus" style="display:none; margin-top:8px; font-size:13px; color:#2e7d32;"></div>
+</div>
+<div class="form-group">
+<label>🎙️ Mémo Vocal (optionnel)</label>
+<button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+<span id="recordText">🎙️ Démarrer l'enregistrement</span>
+</button>
+<div class="recording-timer" id="recordingTimer" style="display:none;">⏱️ 00:00</div>
+<audio class="audio-player" controls="" id="audioPreview" style="display:none;"></audio>
+</div>
+<div class="form-group">
+<label>💬 Commentaire (optionnel)</label>
+<textarea id="commentInput" placeholder="Ajoutez un commentaire..."></textarea>
+</div>
+<div class="button-group">
+<button class="btn-cancel" onclick="closeStepModal()">Annuler</button>
+<button class="btn-save" onclick="saveStep()">Sauvegarder</button>
+</div>
+</div>
+</div>
+<script>
+let currentUser = null;
         let currentDay = 1;
         let currentGPS = null;
         let mediaRecorder = null;
         let audioChunks = [];
         let currentAudioBlob = null;
         let currentPhotoBlob = null;
-        let recordingInterval = null;
+                let photoSavedToDevice = false;
+let recordingInterval = null;
         let recordingStartTime = 0;
 
         document.addEventListener('DOMContentLoaded', function() {
             loadUserConfig();
             populateDateSelectors();
+
+            // Mode hors-ligne (PWA)
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            }
             
             // Ajouter l'événement onchange au photoInput
             document.getElementById('photoInput').addEventListener('change', handlePhotoCapture);
@@ -879,43 +863,132 @@
         }
 
         function saveUserConfig() {
-            const name = document.getElementById('setupName').value.trim();
-            const email = document.getElementById('setupEmail').value.trim();
-            const tripName = document.getElementById('setupTripName').value.trim();
-            const comment = document.getElementById('setupComment').value.trim();
+            try {
+                const name = document.getElementById('setupName').value.trim();
+                const email = document.getElementById('setupEmail').value.trim();
+                const tripName = document.getElementById('setupTripName').value.trim();
+                const comment = document.getElementById('setupComment').value.trim();
 
-            if (!name || !email || !tripName) {
-                alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
-                return;
+                if (!name || !email || !tripName) {
+                    alert('Veuillez remplir au moins le nom, l\'email et le nom du voyage');
+                    return;
+                }
+
+                const userId = 'user_' + Date.now();
+                currentUser = {
+                    id: userId,
+                    name: name,
+                    email: email,
+                    tripName: tripName,
+                    comment: comment,
+                    createdAt: new Date().toISOString()
+                };
+
+                // localStorage peut être bloqué selon le navigateur / paramètres confidentialité
+                try {
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                } catch (e) {
+                    console.warn('localStorage indisponible, mode mémoire uniquement', e);
+                    alert("⚠️ Stockage local bloqué par le navigateur." + "\\n" + "Le voyage peut s'ouvrir, mais vos données risquent de ne pas être conservées après fermeture.");
+                }
+
+                initUserData();
+                showMainApp();
+            } catch (err) {
+                console.error('Erreur au démarrage du voyage:', err);
+                alert("Erreur : impossible de démarrer le voyage." + "\\n" + "Ouvrez la console (F12) pour voir le détail.");
             }
-
-            const userId = 'user_' + Date.now();
-            currentUser = {
-                id: userId,
-                name: name,
-                email: email,
-                tripName: tripName,
-                comment: comment,
-                createdAt: new Date().toISOString()
-            };
-
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            initUserData();
-            showMainApp();
         }
 
-        function initUserData() {
-            const dataKey = 'tripData_' + currentUser.id;
-            const existing = localStorage.getItem(dataKey);
-            if (!existing) {
-                const today = new Date();
-                const dateStr = today.toISOString().split('T')[0];
-                const initialData = {
-                    userId: currentUser.id,
-                    days: [{ day: 1, date: dateStr, steps: [] }]
-                };
-                localStorage.setItem(dataKey, JSON.stringify(initialData));
+
+
+        // ===== Données utilisateur (IndexedDB) =====
+let tripData = null;
+const DB_NAME = 'roadtrip_offline_db';
+const DB_VERSION = 1;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('tripData')) {
+                db.createObjectStore('tripData', { keyPath: 'userId' });
             }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbGetTripData(userId) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('tripData', 'readonly');
+        const req = tx.objectStore('tripData').get(userId);
+        req.onsuccess = () => resolve(req.result ? req.result.data : null);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbSetTripData(userId, data) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('tripData', 'readwrite');
+        tx.objectStore('tripData').put({ userId, data });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+function createInitialData() {
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0];
+    return {
+        userId: currentUser.id,
+        days: [{ day: 1, date: dateStr, steps: [] }]
+    };
+}
+
+function attachMediaUrls() {
+    if (!tripData) return;
+    for (const day of tripData.days || []) {
+        for (const step of day.steps || []) {
+            if (step.photoBlob && !step.photoUrl) {
+                try { step.photoUrl = URL.createObjectURL(step.photoBlob); } catch {}
+            }
+            if (step.audioBlob && !step.audioUrl) {
+                try { step.audioUrl = URL.createObjectURL(step.audioBlob); } catch {}
+            }
+        }
+    }
+}
+
+function revokeMediaUrls() {
+    if (!tripData) return;
+    for (const day of tripData.days || []) {
+        for (const step of day.steps || []) {
+            if (step.photoUrl) { try { URL.revokeObjectURL(step.photoUrl); } catch {} step.photoUrl = null; }
+            if (step.audioUrl) { try { URL.revokeObjectURL(step.audioUrl); } catch {} step.audioUrl = null; }
+        }
+    }
+}
+
+window.addEventListener('beforeunload', revokeMediaUrls);
+
+async function initUserData() {
+    // Compat : conserve le nom de fonction, mais IndexedDB remplace localStorage.
+    if (!currentUser) return;
+    const stored = await idbGetTripData(currentUser.id);
+    if (!stored) {
+        tripData = createInitialData();
+        await idbSetTripData(currentUser.id, tripData);
+    } else {
+        tripData = stored;
+    }
+    attachMediaUrls();
+}
+
         }
 
         function changeUser() {
@@ -993,7 +1066,7 @@
             document.getElementById('mainApp').classList.add('hidden');
         }
 
-        function showMainApp() {
+        async function showMainApp() {
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             
@@ -1001,31 +1074,46 @@
             document.getElementById('headerSubtitle').textContent = 'Mon carnet de voyage';
             document.getElementById('headerUserInfo').textContent = currentUser.name + ' • ' + currentUser.email;
 
-            loadData();
+            await loadData();
             renderDays();
             renderSteps();
         }
 
         function getDataKey() {
-            return 'tripData_' + currentUser.id;
-        }
+    // Compat (plus utilisé pour le stockage principal)
+    return 'tripData_' + currentUser.id;
+}
 
-        function loadData() {
-            const key = getDataKey();
-            const stored = localStorage.getItem(key);
-            if (!stored) {
-                initUserData();
+async async function loadData() {
+    // Charge depuis IndexedDB
+    await initUserData();
+}
+
+function getData() {
+    return tripData;
+}
+
+async function saveData(data) {
+    tripData = data;
+    // Les URLs d'objets ne sont pas sérialisables → on les retire avant la sauvegarde.
+    const clean = structuredClone(data);
+    for (const day of clean.days || []) {
+        for (const step of day.steps || []) {
+            delete step.photoUrl;
+            delete step.audioUrl;
+        }
+    }
+    try {
+        await idbSetTripData(currentUser.id, clean);
+    } catch (e) {
+        throw new Error('Impossible de sauvegarder (IndexedDB). Stockage potentiellement plein ou bloqué.');
+    }
+}
+
+catch (e) {
+                // Souvent QuotaExceededError quand les photos sont trop lourdes
+                throw new Error('Stockage plein (quota localStorage). Essayez de supprimer d’anciennes étapes / jours, ou réduisez la taille des photos.');
             }
-        }
-
-        function getData() {
-            const key = getDataKey();
-            return JSON.parse(localStorage.getItem(key));
-        }
-
-        function saveData(data) {
-            const key = getDataKey();
-            localStorage.setItem(key, JSON.stringify(data));
         }
 
         function renderDays() {
@@ -1041,13 +1129,13 @@
                 btn.className = 'day-btn' + (dayObj.day === currentDay ? ' active' : '');
                 
                 // Récupérer la première photo du jour s'il y en a une
-                const firstPhotoStep = dayObj.steps.find(step => step.photo);
+                const firstPhotoStep = dayObj.steps.find(step => step.photoBlob);
                 
                 // Si une photo existe, l'ajouter en fond
-                if (firstPhotoStep && firstPhotoStep.photo) {
+                if (firstPhotoStep && firstPhotoStep.photoUrl) {
                     const miniPhoto = document.createElement('img');
                     miniPhoto.className = 'day-mini-photo';
-                    miniPhoto.src = firstPhotoStep.photo;
+                    miniPhoto.src = firstPhotoStep.photoUrl;
                     btn.appendChild(miniPhoto);
                 }
                 
@@ -1118,7 +1206,7 @@
                 date: dateStr,
                 steps: [] 
             });
-            saveData(data);
+            await saveData(data);
             currentDay = newDayNumber;
             
             closeAddDayModal();
@@ -1198,6 +1286,13 @@
             
             // Reset variables globales
             currentPhotoBlob = null;
+            photoSavedToDevice = false;
+            // Reset sauvegarde photo
+            const saveBtn = document.getElementById('saveToGalleryBtn');
+            const saveStatus = document.getElementById('saveToGalleryStatus');
+            if (saveBtn) saveBtn.style.display = 'none';
+            if (saveStatus) { saveStatus.style.display = 'none'; saveStatus.textContent = ''; }
+
             currentAudioBlob = null;
             currentGPS = null;
             
@@ -1229,32 +1324,182 @@
             document.getElementById('photoInput').click();
         }
 
-        function handlePhotoCapture(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentPhotoBlob = e.target.result;
-                    const preview = document.getElementById('photoPreview');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    document.getElementById('cameraBtn').style.display = 'none';
-                    document.getElementById('retakeBtn').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+        async function handlePhotoCapture(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            // Indiquer à l’utilisateur qu’on traite l’image (utile sur mobiles)
+            const saveStatus = document.getElementById('saveToGalleryStatus');
+            if (saveStatus) {
+                saveStatus.style.display = 'block';
+                saveStatus.style.color = '#666';
+                saveStatus.textContent = 'Traitement de la photo…';
+            }
+
+            try {
+                // Compression avant stockage (réduit drastiquement les échecs sur 2 sauvegardes successives)
+                const dataUrl = await compressImageFileToDataURL(file, 1280, 0.82);
+                currentPhotoBlob = dataURLToBlob(dataUrl);
+
+                const preview = document.getElementById('photoPreview');
+                preview.src = dataUrl;
+                preview.style.display = 'block';
+                document.getElementById('cameraBtn').style.display = 'none';
+                document.getElementById('retakeBtn').style.display = 'block';
+
+                // Proposer la sauvegarde dans la photothèque (selon les capacités du navigateur)
+                photoSavedToDevice = false;
+                const saveBtn = document.getElementById('saveToGalleryBtn');
+                if (saveBtn) saveBtn.style.display = 'block';
+
+                if (saveStatus) {
+                    saveStatus.style.display = 'block';
+                    saveStatus.style.color = '#666';
+                    saveStatus.textContent = 'Astuce : sur iPhone, la sauvegarde directe dans Photos dépend du navigateur. Le bouton ouvre le partage ou télécharge l’image.';
+                }
+            } catch (err) {
+                currentPhotoBlob = null;
+                if (saveStatus) {
+                    saveStatus.style.display = 'block';
+                    saveStatus.style.color = '#c62828';
+                    saveStatus.textContent = '⚠️ Impossible de traiter la photo. Réessayez.';
+                }
+                alert('Impossible de traiter la photo. Réessayez.');
             }
         }
 
         function retakePhoto() {
+            const photoInput = document.getElementById('photoInput');
+            photoInput.value = '';
+
             document.getElementById('photoInput').value = '';
             document.getElementById('photoPreview').style.display = 'none';
             document.getElementById('photoPreview').src = '';
             document.getElementById('retakeBtn').style.display = 'none';
             document.getElementById('cameraBtn').style.display = 'block';
+            const saveBtn = document.getElementById('saveToGalleryBtn');
+            const saveStatus = document.getElementById('saveToGalleryStatus');
+            if (saveBtn) saveBtn.style.display = 'none';
+            if (saveStatus) { saveStatus.style.display = 'none'; saveStatus.textContent = ''; }
             currentPhotoBlob = null;
         }
 
-        function getCurrentPosition() {
+
+
+        // ===== Sauvegarde dans la photothèque (meilleure-effort) =====
+        // Note: Sur une web-app (Safari/Chrome), JavaScript n’a pas un accès direct garanti à l’app Photos.
+        // On fait donc au mieux:
+        // 1) Web Share API (si supportée) pour "Enregistrer l’image" / partager vers Photos
+        // 2) Téléchargement du fichier (souvent vers Fichiers sur iOS)
+        
+        // Réduire/comprimer les photos avant stockage (évite les erreurs de quota localStorage et améliore la fiabilité)
+        function compressImageFileToDataURL(file, maxWidth = 1280, quality = 0.82) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Lecture du fichier photo impossible.'));
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Chargement de l’image impossible.'));
+                    img.onload = () => {
+                        try {
+                            const scale = Math.min(1, maxWidth / img.width);
+                            const w = Math.round(img.width * scale);
+                            const h = Math.round(img.height * scale);
+
+                            const canvas = document.createElement('canvas');
+                            canvas.width = w;
+                            canvas.height = h;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, w, h);
+
+                            // Toujours en JPEG pour réduire la taille
+                            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                            resolve(dataUrl);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+function dataURLToBlob(dataUrl) {
+            const parts = dataUrl.split(',');
+            const mimeMatch = parts[0].match(/data:(.*?);base64/);
+            const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+            const binary = atob(parts[1] || '');
+            const len = binary.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+            return new Blob([bytes], { type: mime });
+        }
+
+        async async function savePhotoToLibrary(openShare = true) {
+            try {
+                if (!currentPhotoBlob) {
+                    alert('Aucune photo à sauvegarder.');
+                    return;
+                }
+
+                const status = document.getElementById('saveToGalleryStatus');
+                const blob = (currentPhotoBlob instanceof Blob) ? currentPhotoBlob : dataURLToBlob(currentPhotoBlob);
+
+                // Nom de fichier lisible
+                const ts = new Date().toISOString().replace(/[:.]/g, '-');
+                const ext = (blob.type && blob.type.includes('png')) ? 'png' : 'jpg';
+                const filename = `roadtrip_${ts}.${ext}`;
+
+                // 1) Web Share (meilleure option sur mobile, mais nécessite un geste utilisateur)
+                if (openShare && navigator.share && navigator.canShare) {
+                    const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+                    if (navigator.canShare({ files: [file] })) {
+                        if (status) {
+                            status.style.display = 'block';
+                            status.style.color = '#2e7d32';
+                            status.textContent = 'Ouverture du partage… choisissez "Enregistrer l’image" / Photos.';
+                        }
+                        await navigator.share({
+                            files: [file],
+                            title: 'Photo Road Trip',
+                            text: 'Enregistrer cette photo dans Photos'
+                        });
+                        photoSavedToDevice = true;
+                        if (status) status.textContent = '✅ Partage terminé (si vous avez choisi Photos, la photo est enregistrée).';
+                        return;
+                    }
+                }
+
+                // 2) Fallback: téléchargement du fichier
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                photoSavedToDevice = true;
+                if (status) {
+                    status.style.display = 'block';
+                    status.style.color = '#2e7d32';
+                    status.textContent = '✅ Photo téléchargée. Sur iPhone, elle peut aller dans l’app Fichiers (selon le navigateur).';
+                }
+            } catch (err) {
+                const status = document.getElementById('saveToGalleryStatus');
+                if (status) {
+                    status.style.display = 'block';
+                    status.style.color = '#c62828';
+                    status.textContent = '⚠️ Sauvegarde impossible automatiquement. Essayez le bouton de partage ou utilisez "Partager" depuis l’aperçu.';
+                }
+                // console.error(err);
+            }
+        }
+
+                function getCurrentPosition() {
             const status = document.getElementById('gpsStatus');
             
             if (!navigator.geolocation) {
@@ -1321,14 +1566,10 @@
                         const audioBlob = new Blob(audioChunks, { type: mimeType });
                         const audioUrl = URL.createObjectURL(audioBlob);
                         
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                            currentAudioBlob = reader.result;
+                        currentAudioBlob = audioBlob;
                             const preview = document.getElementById('audioPreview');
                             preview.src = audioUrl;
                             preview.style.display = 'block';
-                        };
-                        reader.readAsDataURL(audioBlob);
 
                         stream.getTracks().forEach(track => track.stop());
                         if (recordingInterval) clearInterval(recordingInterval);
@@ -1354,12 +1595,18 @@
             }
         }
 
-        function saveStep() {
+        async function saveStep() {
             const comment = document.getElementById('commentInput').value.trim();
             
             if (!currentPhotoBlob && !currentAudioBlob && !comment) {
                 alert('Veuillez ajouter au moins une photo, un mémo vocal ou un commentaire');
                 return;
+            }
+
+            // Tente de sauvegarder la photo sur l'appareil (sans ouvrir le partage automatiquement)
+            if (currentPhotoBlob && !photoSavedToDevice) {
+                // Best effort: téléchargement (souvent vers "Fichiers" sur iOS)
+                savePhotoToLibrary(false);
             }
 
             const data = getData();
@@ -1368,15 +1615,27 @@
             const step = {
                 id: Date.now() + Math.random(),
                 timestamp: new Date().toISOString(),
-                photo: currentPhotoBlob,
-                audio: currentAudioBlob,
+                photoBlob: currentPhotoBlob,
+                audioBlob: currentAudioBlob,
                 comment: comment,
                 gps: currentGPS
             };
 
+            // URLs d'aperçu (non persistées)
+            if (step.photoBlob) { try { step.photoUrl = URL.createObjectURL(step.photoBlob); } catch {} }
+            if (step.audioBlob) { try { step.audioUrl = URL.createObjectURL(step.audioBlob); } catch {} }
+
             dayData.steps.push(step);
-            saveData(data);
-            
+
+            try {
+                saveData(data);
+            } catch (e) {
+                // Annuler l'ajout si on ne peut pas sauvegarder
+                dayData.steps.pop();
+                alert(e.message || 'Impossible de sauvegarder cette étape (stockage plein).');
+                return;
+            }
+
             closeStepModal();
             renderSteps();
             renderDays(); // Rafraîchir les jours pour mettre à jour la mini photo
@@ -1402,8 +1661,8 @@
                             <div class="step-time">🕐 ${timeStr}</div>
                             <button class="delete-btn" onclick="deleteStep(${step.id})">Supprimer</button>
                         </div>
-                        ${step.photo ? `<img src="${step.photo}" class="step-photo" alt="Photo">` : ''}
-                        ${step.audio ? `<audio src="${step.audio}" class="audio-player" controls></audio>` : ''}
+                        ${step.photoUrl ? `<img src="${step.photoUrl}" class="step-photo" alt="Photo">` : ''}
+                        ${step.audioUrl ? `<audio src="${step.audioUrl}" class="audio-player" controls></audio>` : ''}
                         ${step.comment ? `<div class="step-comment">${step.comment}</div>` : ''}
                         ${step.gps ? `<div class="step-gps">📍 <a href="https://www.google.com/maps?q=${step.gps.lat},${step.gps.lng}" target="_blank">C'était ici</a></div>` : ''}
                     </div>
@@ -1411,7 +1670,7 @@
             }).join('');
         }
 
-        function deleteStep(stepId) {
+        async function deleteStep(stepId) {
             if (!confirm('Supprimer cette étape ?')) return;
             
             const data = getData();
@@ -1422,10 +1681,18 @@
             renderDays(); // Rafraîchir les jours pour mettre à jour la mini photo
         }
 
-        function exportToPDF() {
-            const data = getData();
-            
-            let html = `<!DOCTYPE html>
+        async function exportToPDF() {
+    const data = getData();
+
+    // Convertit un Blob en DataURL (pour pouvoir l'intégrer dans un HTML exporté)
+    const blobToDataURL = (blob) => new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onloadend = () => resolve(r.result);
+        r.onerror = () => reject(r.error);
+        r.readAsDataURL(blob);
+    });
+
+    let html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -1436,13 +1703,12 @@
         h1 { color: #d2691e; border-bottom: 3px solid #d2691e; padding-bottom: 10px; }
         .user-info { color: #666; font-size: 14px; margin-bottom: 10px; }
         .user-comment { background: #f5deb3; padding: 15px; border-radius: 8px; margin-bottom: 30px; font-style: italic; }
-        .day { page-break-before: always; margin-bottom: 40px; }
-        .day:first-of-type { page-break-before: avoid; }
-        .day-header { background: #f5deb3; padding: 15px; margin-bottom: 20px; border-left: 5px solid #d2691e; }
-        .day-title { font-size: 24px; color: #d2691e; margin: 0; }
-        .day-date { color: #666; font-size: 14px; margin-top: 5px; }
-        .step { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; page-break-inside: avoid; }
-        .step-time { color: #999; font-size: 14px; margin-bottom: 10px; }
+        .day { margin-bottom: 40px; page-break-inside: avoid; }
+        .day-header { background: #d2691e; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .day-title { margin: 0; font-size: 24px; }
+        .day-date { margin: 5px 0 0 0; opacity: 0.9; }
+        .step { border-left: 4px solid #d2691e; padding-left: 20px; margin-bottom: 25px; page-break-inside: avoid; }
+        .step-time { font-weight: bold; color: #d2691e; margin-bottom: 8px; }
         .step-photo { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
         .step-comment { background: #f9f9f9; padding: 10px; border-radius: 5px; margin: 10px 0; }
         .step-audio-note { background: #fff3e0; padding: 10px; border-radius: 5px; margin: 10px 0; color: #ff9800; }
@@ -1457,15 +1723,15 @@
     ${currentUser.comment ? `<div class="user-comment">${currentUser.comment}</div>` : ''}
 `;
 
-            data.days.forEach(day => {
-                const dateFormatted = new Date(day.date + 'T00:00:00').toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+    for (const day of data.days) {
+        const dateFormatted = new Date(day.date + 'T00:00:00').toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 
-                html += `
+        html += `
     <div class="day">
         <div class="day-header">
             <h2 class="day-title">Jour ${day.day}</h2>
@@ -1473,55 +1739,57 @@
         </div>
 `;
 
-                if (day.steps.length === 0) {
-                    html += `<div class="no-steps">Aucune étape pour ce jour</div>`;
-                } else {
-                    day.steps.forEach(step => {
-                        const stepTime = new Date(step.timestamp).toLocaleTimeString('fr-FR', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
+        if (!day.steps || day.steps.length === 0) {
+            html += `<div class="no-steps">Aucune étape pour ce jour</div>`;
+        } else {
+            for (const step of day.steps) {
+                const stepTime = new Date(step.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                html += `<div class="step"><div class="step-time">🕐 ${stepTime}</div>`;
 
-                        html += `<div class="step"><div class="step-time">🕐 ${stepTime}</div>`;
-                        
-                        if (step.photo) {
-                            html += `<img src="${step.photo}" class="step-photo" alt="Photo de l'étape">`;
-                        }
-                        
-                        if (step.audio) {
-                            html += `<div class="step-audio-note">🎙️ Mémo vocal enregistré pour cette étape</div>`;
-                        }
-                        
-                        if (step.comment) {
-                            html += `<div class="step-comment">${step.comment}</div>`;
-                        }
-                        
-                        if (step.gps) {
-                            const mapsUrl = `https://www.google.com/maps?q=${step.gps.lat},${step.gps.lng}`;
-                            html += `<div class="step-gps">📍 <a href="${mapsUrl}" target="_blank">C'était ici</a> (${step.gps.lat.toFixed(6)}, ${step.gps.lng.toFixed(6)})</div>`;
-                        }
+                if (step.photoBlob) {
+                    try {
+                        const photoDataUrl = await blobToDataURL(step.photoBlob);
+                        html += `<img src="${photoDataUrl}" class="step-photo" alt="Photo de l'étape">`;
+                    } catch {
+                        html += `<div class="step-audio-note">📷 Photo non exportable</div>`;
+                    }
+                }
 
-                        html += `</div>`;
-                    });
+                if (step.audioBlob) {
+                    html += `<div class="step-audio-note">🎙️ Mémo vocal enregistré pour cette étape</div>`;
+                }
+
+                if (step.comment) {
+                    html += `<div class="step-comment">${step.comment}</div>`;
+                }
+
+                if (step.gps) {
+                    html += `<div class="step-gps">📍 <a href="https://www.google.com/maps?q=${step.gps.lat},${step.gps.lng}" target="_blank">C'était ici</a></div>`;
                 }
 
                 html += `</div>`;
-            });
-
-            html += `</body></html>`;
-
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentUser.tripName.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('Fichier HTML téléchargé ! Ouvrez-le et utilisez "Imprimer > Enregistrer en PDF" sur votre ordinateur.');
+            }
         }
+
+        html += `</div>`;
+    }
+
+    html += `
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentUser.tripName.replace(/[^a-z0-9]/gi, '_')}_carnet.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    alert('Fichier HTML téléchargé ! Ouvrez-le et utilisez "Imprimer > Enregistrer en PDF" sur votre ordinateur.');
+}
 
         function exportBackup() {
             const allData = {
@@ -1541,6 +1809,18 @@
             URL.revokeObjectURL(url);
             alert('Sauvegarde téléchargée ! Conservez ce fichier précieusement.');
         }
-    </script>
+    
+
+        // S'assure que le bouton fonctionne même si les handlers inline sont bloqués
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('startTripBtn');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    saveUserConfig();
+                });
+            }
+        });
+</script>
 </body>
 </html>
