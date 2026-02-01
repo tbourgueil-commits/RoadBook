@@ -691,10 +691,10 @@
     <input id="setupEmail" placeholder="Ex: thomas@example.com" type="email"/>
   </div>
 
-  <button class="btn-primary" id="loginBtn" onclick="saveUserConfig()">Continuer</button>
+  <button class="btn-primary" id="loginBtn" onclick="saveUserConfig()" type="button">Continuer</button>
 
   <div style="margin-top:14px;">
-    <button class="btn-primary" style="background:#4CAF50;" onclick="openCreateTripModalFromLogin()">➕ Créer un road trip</button>
+    <button class="btn-primary" style="background:#4CAF50;" onclick="openCreateTripModalFromLogin()" type="button">➕ Créer un road trip</button>
   </div>
 
   <div style="margin-top:14px; font-size: 13px; color:#666; text-align:center;">
@@ -707,12 +707,12 @@
   <div class="trip-name" id="homeSubtitle">Choisissez un road trip ou créez-en un nouveau</div>
   <div class="user-info">
     <span id="headerUserInfo"></span>
-    <button class="btn-change-user" onclick="openUserMenu()">⚙️ Profil</button>
+    <button class="btn-change-user" onclick="openUserMenu()" type="button">⚙️ Profil</button>
   </div>
 </div>
 
 <div id="homeScreen">
-  <button class="add-step-btn" style="margin-top:0;" onclick="openCreateTripModal()">+ Nouveau road trip</button>
+  <button class="add-step-btn" style="margin-top:0;" onclick="openCreateTripModal()" type="button">+ Nouveau road trip</button>
   <div id="tripsContainer"></div>
 </div>
 
@@ -722,19 +722,19 @@
     <div class="trip-name" id="headerSubtitle"></div>
     <div class="user-info">
       <span id="tripDates"></span>
-      <button class="btn-change-user" onclick="backToHome()">⬅️ Accueil</button>
+      <button class="btn-change-user" onclick="backToHome()" type="button">⬅️ Accueil</button>
     </div>
   </div>
 
   <div class="day-selector">
     <div class="day-buttons" id="dayButtons"></div>
     <div class="export-buttons-row">
-      <button class="export-btn" onclick="exportToPDF()">📄 Générer PDF</button>
-      <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;">Sauvegarder</button>
+      <button class="export-btn" onclick="exportToPDF()" type="button">📄 Générer PDF</button>
+      <button class="export-btn" onclick="exportBackup()" style="background:#FF5722;" type="button">Sauvegarder</button>
     </div>
   </div>
 
-  <button class="add-step-btn" onclick="openStepModal()">+ Ajouter une étape</button>
+  <button class="add-step-btn" onclick="openStepModal()" type="button">+ Ajouter une étape</button>
   <div id="stepsContainer"></div>
 </div>
 </div>
@@ -752,8 +752,8 @@
 </div>
 </div>
 <div class="button-group">
-<button class="btn-cancel" onclick="closeAddDayModal()">Annuler</button>
-<button class="btn-save" onclick="saveNewDay()">Créer</button>
+<button class="btn-cancel" onclick="closeAddDayModal()" type="button">Annuler</button>
+<button class="btn-save" onclick="saveNewDay()" type="button">Créer</button>
 </div>
 </div>
 </div>
@@ -770,8 +770,8 @@
 </div>
 </div>
 <div class="button-group">
-<button class="btn-cancel" onclick="closeEditDayModal()">Annuler</button>
-<button class="btn-save" onclick="saveEditDay()">Sauvegarder</button>
+<button class="btn-cancel" onclick="closeEditDayModal()" type="button">Annuler</button>
+<button class="btn-save" onclick="saveEditDay()" type="button">Sauvegarder</button>
 </div>
 </div>
 </div>
@@ -779,13 +779,13 @@
 <div class="user-menu-overlay" id="userMenuOverlay" onclick="closeUserMenu()"></div>
 <div class="user-menu" id="userMenu">
 <h3>Mon Profil</h3>
-<button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()">
+<button class="menu-btn menu-btn-edit" onclick="openEditProfileModal()" type="button">
             ✏️ Modifier mes informations
         </button>
-<button class="menu-btn menu-btn-change" onclick="confirmChangeUser()">
+<button class="menu-btn menu-btn-change" onclick="confirmChangeUser()" type="button">
             🔄 Changer d'utilisateur
         </button>
-<button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()">
+<button class="menu-btn menu-btn-cancel" onclick="closeUserMenu()" type="button">
             Annuler
         </button>
 </div>
@@ -803,8 +803,8 @@
 </div>
 
 <div class="button-group">
-<button class="btn-cancel" onclick="closeEditProfileModal()">Annuler</button>
-<button class="btn-save" onclick="saveEditProfile()">Sauvegarder</button>
+<button class="btn-cancel" onclick="closeEditProfileModal()" type="button">Annuler</button>
+<button class="btn-save" onclick="saveEditProfile()" type="button">Sauvegarder</button>
 </div>
 </div>
 </div>
@@ -841,8 +841,8 @@
     </div>
 
     <div class="button-group">
-      <button class="btn-cancel" onclick="closeCreateTripModal()">Annuler</button>
-      <button class="btn-save" onclick="createTrip()">Créer</button>
+      <button class="btn-cancel" onclick="closeCreateTripModal()" type="button">Annuler</button>
+      <button class="btn-save" onclick="createTrip()" type="button">Créer</button>
     </div>
   </div>
 </div>
@@ -854,21 +854,21 @@
 <div class="form-group">
 <label>📸 Photo (optionnelle)</label>
 <input accept="image/*" capture="environment" id="photoInput" style="display:none;" type="file"/>
-<button class="camera-btn" id="cameraBtn" onclick="openNativeCamera()">
+<button class="camera-btn" id="cameraBtn" onclick="openNativeCamera()" type="button">
                     📷 Prendre une photo
                 </button>
 <img class="preview-image" id="photoPreview" style="display:none;"/>
-<button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display:none; background:#ff9800;">
+<button class="camera-btn" id="retakeBtn" onclick="retakePhoto()" style="display:none; background:#ff9800;" type="button">
                     🔄 Reprendre une photo
                 </button>
-<button class="camera-btn" id="saveToGalleryBtn" onclick="savePhotoToLibrary(true)" style="display:none; background:#4CAF50;">
+<button class="camera-btn" id="saveToGalleryBtn" onclick="savePhotoToLibrary(true)" style="display:none; background:#4CAF50;" type="button">
                     💾 Sauvegarder dans la photothèque
                 </button>
 <div id="saveToGalleryStatus" style="display:none; margin-top:8px; font-size:13px; color:#2e7d32;"></div>
 </div>
 <div class="form-group">
 <label>🎙️ Mémo Vocal (optionnel)</label>
-<button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+<button class="record-btn" id="recordBtn" onclick="toggleRecording()" type="button">
 <span id="recordText">🎙️ Démarrer l'enregistrement</span>
 </button>
 <div class="recording-timer" id="recordingTimer" style="display:none;">⏱️ 00:00</div>
@@ -879,8 +879,8 @@
 <textarea id="commentInput" placeholder="Ajoutez un commentaire..."></textarea>
 </div>
 <div class="button-group">
-<button class="btn-cancel" onclick="closeStepModal()">Annuler</button>
-<button class="btn-save" onclick="saveStep()">Sauvegarder</button>
+<button class="btn-cancel" onclick="closeStepModal()" type="button">Annuler</button>
+<button class="btn-save" onclick="saveStep()" type="button">Sauvegarder</button>
 </div>
 </div>
 </div>
@@ -970,6 +970,76 @@ let recordingInterval = null;
             return `${y}-${m}-${d}`;
         }
 
+        function ensureTripDateSelectors() {
+            // Initialise les listes déroulantes de dates du modal "Créer un road trip" si nécessaire.
+            const daySel = document.getElementById('tripStartDay');
+            const monthSel = document.getElementById('tripStartMonth');
+            const yearSel = document.getElementById('tripStartYear');
+            const daySel2 = document.getElementById('tripEndDay');
+            const monthSel2 = document.getElementById('tripEndMonth');
+            const yearSel2 = document.getElementById('tripEndYear');
+
+            if (!daySel || !monthSel || !yearSel || !daySel2 || !monthSel2 || !yearSel2) return;
+
+            // Si déjà peuplé, ne rien faire
+            if (daySel.options.length > 0 && monthSel.options.length > 0 && yearSel.options.length > 0) return;
+
+            // Jours
+            for (let d = 1; d <= 31; d++) {
+                const opt1 = document.createElement('option');
+                opt1.value = String(d);
+                opt1.textContent = String(d);
+                daySel.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = String(d);
+                opt2.textContent = String(d);
+                daySel2.appendChild(opt2);
+            }
+
+            // Mois
+            for (let m = 1; m <= 12; m++) {
+                const opt1 = document.createElement('option');
+                opt1.value = String(m);
+                opt1.textContent = String(m);
+                monthSel.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = String(m);
+                opt2.textContent = String(m);
+                monthSel2.appendChild(opt2);
+            }
+
+            // Années : de l'année courante-1 à +5 (modifiable ensuite)
+            const now = new Date();
+            const y0 = now.getFullYear() - 1;
+            const y1 = now.getFullYear() + 5;
+            for (let y = y0; y <= y1; y++) {
+                const opt1 = document.createElement('option');
+                opt1.value = String(y);
+                opt1.textContent = String(y);
+                yearSel.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = String(y);
+                opt2.textContent = String(y);
+                yearSel2.appendChild(opt2);
+            }
+
+            // Valeurs par défaut : aujourd'hui -> +7 jours
+            const start = new Date();
+            const end = new Date();
+            end.setDate(end.getDate() + 7);
+
+            daySel.value = String(start.getDate());
+            monthSel.value = String(start.getMonth() + 1);
+            yearSel.value = String(start.getFullYear());
+
+            daySel2.value = String(end.getDate());
+            monthSel2.value = String(end.getMonth() + 1);
+            yearSel2.value = String(end.getFullYear());
+        }
+
         function formatDateFR(iso) {
             try {
                 const [y,m,d] = iso.split('-');
@@ -978,7 +1048,8 @@ let recordingInterval = null;
         }
 
         function openCreateTripModal() {
-            // Pré-remplit des valeurs raisonnables
+            // Pré-remplit des valeurs raisonnables et s'assure que les sélecteurs de dates sont bien initialisés
+            ensureTripDateSelectors();
             document.getElementById('createTripName').value = '';
             document.getElementById('createTripComment').value = '';
             document.getElementById('createTripModal').classList.add('active');
@@ -2134,7 +2205,7 @@ function dataURLToBlob(dataUrl) {
                     <div class="step-card">
                         <div class="step-header">
                             <div class="step-time">🕐 ${timeStr}</div>
-                            <button class="delete-btn" onclick="deleteStep(${step.id})">Supprimer</button>
+                            <button class="delete-btn" onclick="deleteStep(${step.id})" type="button">Supprimer</button>
                         </div>
                         ${step.photoUrl ? `<img src="${step.photoUrl}" class="step-photo" alt="Photo">` : ''}
                         ${step.audioUrl ? `<audio src="${step.audioUrl}" class="audio-player" controls></audio>` : ''}
@@ -2289,7 +2360,9 @@ function dataURLToBlob(dataUrl) {
 
         // S'assure que le bouton fonctionne même si les handlers inline sont bloqués
         document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('startTripBtn');
+            // Prépare aussi le modal de création de road trip
+            ensureTripDateSelectors();
+const btn = document.getElementById('startTripBtn');
             if (btn) {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();

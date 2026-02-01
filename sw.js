@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roadtrip-offline-v2';
+const CACHE_NAME = 'roadtrip-offline-v3';
 
 // Cache the app shell so it works in airplane mode.
 const ASSETS = [
