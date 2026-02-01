@@ -1455,7 +1455,11 @@ function datesBetween(startISO, endISO) {
     if (isNaN(start) || isNaN(end) || start > end) return out;
     const cur = new Date(start);
     while (cur <= end) {
-        out.push(cur.toISOString().split('T')[0]);
+        // Utiliser getFullYear, getMonth, getDate pour éviter les problèmes de fuseau horaire
+        const year = cur.getFullYear();
+        const month = String(cur.getMonth() + 1).padStart(2, '0');
+        const day = String(cur.getDate()).padStart(2, '0');
+        out.push(`${year}-${month}-${day}`);
         cur.setDate(cur.getDate() + 1);
     }
     return out;
@@ -1500,7 +1504,8 @@ async function initTrip(tripId) {
     const stored = await idbGetTripContent(tripId);
     if (!stored) {
         // fallback
-        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         tripData = { tripId, days: [{ day: 1, date: today, steps: [] }] };
         await idbSetTripContent(tripId, tripData);
     } else {
@@ -2350,7 +2355,9 @@ function dataURLToBlob(dataUrl) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `backup_${tripTitle.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            a.download = `backup_${tripTitle.replace(/\s/g, '_')}_${dateStr}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
